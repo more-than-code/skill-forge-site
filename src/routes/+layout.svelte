@@ -14,7 +14,7 @@
 		<div class="links">
 			<a href="/skills">Skills</a>
 			<a href={REPO_URL}>GitHub</a>
-			{#if data.portalLive}
+			{#if data.consoleLive}
 				<a class="button primary" href={SIGN_IN_URL}>Sign in</a>
 			{/if}
 		</div>

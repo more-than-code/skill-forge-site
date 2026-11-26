@@ -2,7 +2,7 @@
 
 The public landing site: the home page, the public skill catalog (`/skills`, one page per skill
 and per tag), a 404 page, `robots.txt`, `sitemap.xml` and `llms.txt`. Visitors browse without
-signing in; using the platform means signing in to the portal, a separate app on its own host.
+signing in; using the platform means signing in to the console, a separate app on its own host.
 The site is static, on Cloudflare Pages (project `skill-forge-site`), with its own build and
 release, the same way the Deploybot and Defect Drainer sites are built and hosted.
 
@@ -42,7 +42,7 @@ claim is absent from the output while its flag is off, so the site says only wha
 
 | Flag | Turns on | Set to 1 when |
 |---|---|---|
-| `PORTAL_LIVE` | Sign in (header), Get started, the "Your own registries" section | the portal accepts sign-ins |
+| `CONSOLE_LIVE` | Sign in (header), Get started, the "Your own registries" section | the console accepts sign-ins |
 
 ## Commands
 
@@ -60,7 +60,7 @@ pnpm guard   # tests/guard.build.mjs over build/
 `guard` checks: no `.js` file or `<script>`; every absolute URL is on the site's hosts or under
 `github.com/more-than-code/skill-forge`; a page and a sitemap entry for every skill and tag; `404.html`
 with absolute asset URLs; `_headers`, `robots.txt` and `llms.txt` present and no `_redirects`; no
-robots meta; no inline styles (the CSP in `_headers` allows only `style-src 'self'`); every sitemap URL is a built page and `llms.txt` lists every skill; Sign in and the registries section only with `PORTAL_LIVE=1`, pointing at the portal. CI runs build and guard with the flag off and on.
+robots meta; no inline styles (the CSP in `_headers` allows only `style-src 'self'`); every sitemap URL is a built page and `llms.txt` lists every skill; Sign in and the registries section only with `CONSOLE_LIVE=1`, pointing at the console. CI runs build and guard with the flag off and on.
 
 ## Deploy (on Joe's yes)
 
@@ -75,12 +75,12 @@ the gates and never deploys.
 
 ```bash
 sh scripts/deploy.sh                               # preview: https://preview.skill-forge-site.pages.dev
-BRANCH=main PORTAL_LIVE=0 sh scripts/deploy.sh     # production, after Joe's yes
+BRANCH=main CONSOLE_LIVE=0 sh scripts/deploy.sh     # production, after Joe's yes
 DRY_RUN=1 sh scripts/deploy.sh                     # every gate, no upload, reads no credentials
 ```
 
 `deploy.sh` refuses a dirty tree; for production it also refuses a commit that is not on
-`origin/dev`, placeholder domains still in `src/lib/links.ts`, and an unset `PORTAL_LIVE`, before any gate. It runs
+`origin/dev`, placeholder domains still in `src/lib/links.ts`, and an unset `CONSOLE_LIVE`, before any gate. It runs
 install, check, test, build and guard, checks the tree and HEAD did not change, then runs
 `wrangler pages deploy build --project-name skill-forge-site --branch <branch> --commit-hash <HEAD>`.
 The project's production branch is `main`; any other branch is a preview.

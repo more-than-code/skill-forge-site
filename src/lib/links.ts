@@ -1,12 +1,12 @@
-// Addresses for the public site, a static site on Cloudflare Pages, separate from the portal.
+// Addresses for the public site, a static site on Cloudflare Pages, separate from the console.
 // The domains are placeholders until Joe picks them: scripts/deploy.sh refuses a production
 // deploy while any ".example" host is in the build.
 
 /** The site's origin. Canonical, og:url, sitemap and robots URLs use it on every host. */
 export const SITE_URL = 'https://skillforge.example';
 
-/** The portal's sign-in page (the SvelteKit portal, a different host). Shown only with PORTAL_LIVE=1. */
-export const SIGN_IN_URL = 'https://portal.skillforge.example/signin';
+/** The console's sign-in page (the SvelteKit console, a different host). Shown only with CONSOLE_LIVE=1. */
+export const SIGN_IN_URL = 'https://console.skillforge.example/signin';
 
 /** The open-source registry and skf CLI: the public catalog's source. */
 export const REPO_URL = 'https://github.com/more-than-code/skill-forge';
