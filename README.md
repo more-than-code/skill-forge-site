@@ -1,8 +1,8 @@
 # Skill Forge site
 
-The public landing site: the home page, the public skill catalog (`/skills`, one page per skill
+The public landing site, at the root domain (`<domain>`, with `www.<domain>` redirecting to it): the home page, the public skill catalog (`/skills`, one page per skill
 and per tag), a 404 page, `robots.txt`, `sitemap.xml` and `llms.txt`. Visitors browse without
-signing in; using the platform means signing in to the console, a separate app on its own host.
+signing in; using the platform means signing in to the console, a separate app at `console.<domain>`.
 The site is static, on Cloudflare Pages (project `skill-forge-site`), with its own build and
 release, the same way the Deploybot and Defect Drainer sites are built and hosted.
 
@@ -84,6 +84,19 @@ DRY_RUN=1 sh scripts/deploy.sh                     # every gate, no upload, read
 install, check, test, build and guard, checks the tree and HEAD did not change, then runs
 `wrangler pages deploy build --project-name skill-forge-site --branch <branch> --commit-hash <HEAD>`.
 The project's production branch is `main`; any other branch is a preview.
+
+## Domains (after the domain is chosen)
+
+The site is the root domain; the console is `console.<domain>` (Joe, 2026-11-26).
+
+1. Set `SITE_URL` (`https://<domain>`) and `SIGN_IN_URL` (`https://console.<domain>/signin`) in
+   `src/lib/links.ts`, and the allowed hosts in `tests/guard.build.mjs`.
+2. In the Pages project, add `<domain>` and `www.<domain>` as custom domains.
+3. Redirect `www.<domain>` to `https://<domain>` (301, path and query kept) with a Cloudflare
+   redirect rule on the zone. Pages' `_redirects` matches paths only, not hosts, and the build has
+   no `_redirects`. Canonical URLs already name the root domain, so `www` is never indexed as a
+   separate site.
+4. `console.<domain>` points at the console's host (Deploybot), not at Pages.
 
 `_headers` adds `nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: no-referrer`, a strict Content-Security-Policy and a Permissions-Policy everywhere,
 and `X-Robots-Tag: noindex` on `pages.dev` hosts and a direct `/404`, so previews are never indexed.
