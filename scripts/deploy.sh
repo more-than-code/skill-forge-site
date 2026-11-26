@@ -66,15 +66,15 @@ if [ "$BRANCH" = main ]; then
 	fi
 fi
 
-# 2b. Production never ships the placeholder domains (src/lib/links.ts) or a site without its portal flag
-# decided: PORTAL_LIVE comes from the environment, so say it explicitly for production.
+# 2b. Production never ships the placeholder domains (src/lib/links.ts) or a site without its console flag
+# decided: CONSOLE_LIVE comes from the environment, so say it explicitly for production.
 if [ "$BRANCH" = main ]; then
 	if grep -qF 'skillforge.example' src/lib/links.ts; then
 		fail "src/lib/links.ts still names the placeholder domain skillforge.example; set the real domains first"
 	fi
-	case "${PORTAL_LIVE-}" in
+	case "${CONSOLE_LIVE-}" in
 		0 | 1) ;;
-		*) fail "set PORTAL_LIVE=0 or PORTAL_LIVE=1 explicitly for a production deploy" ;;
+		*) fail "set CONSOLE_LIVE=0 or CONSOLE_LIVE=1 explicitly for a production deploy" ;;
 	esac
 fi
 

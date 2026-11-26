@@ -9,5 +9,5 @@ function flag(name) {
 	return value === '1';
 }
 
-/** The portal accepts sign-ins: shows Sign in and Get started. */
-export const PORTAL_LIVE = flag('PORTAL_LIVE');
+/** The console accepts sign-ins: shows Sign in and Get started. */
+export const CONSOLE_LIVE = flag('CONSOLE_LIVE');

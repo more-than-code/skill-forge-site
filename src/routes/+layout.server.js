@@ -1,5 +1,5 @@
-import { PORTAL_LIVE } from '$lib/flags.js';
+import { CONSOLE_LIVE } from '$lib/flags.js';
 
 export function load() {
-	return { portalLive: PORTAL_LIVE };
+	return { consoleLive: CONSOLE_LIVE };
 }

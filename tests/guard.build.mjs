@@ -21,7 +21,7 @@ const read = (f) => readFileSync(join(build, f), 'utf8');
 // and XML namespaces.
 const ALLOWED_URL = [
 	/^https:\/\/skillforge\.example(\/|$)/,
-	/^https:\/\/portal\.skillforge\.example\//,
+	/^https:\/\/console\.skillforge\.example\//,
 	/^https:\/\/github\.com\/more-than-code\/skill-forge(\/|$)/,
 	/^http:\/\/www\.w3\.org\/2000\/svg$/,
 	/^http:\/\/www\.sitemaps\.org\/schemas\/sitemap\/0\.9$/
@@ -81,14 +81,14 @@ test('no page has a robots meta (noindex comes from _headers on preview hosts on
 	for (const f of text.filter((f) => f.endsWith('.html'))) assert.doesNotMatch(read(f), /name="robots"/, f);
 });
 
-test('Sign in appears only when the portal is live', () => {
+test('Sign in appears only when the console is live', () => {
 	const home = read('index.html');
-	if (process.env.PORTAL_LIVE === '1') {
-		const signIn = [...home.matchAll(/href="(https:\/\/portal\.[^"]+\/signin)"/g)];
-		assert.ok(signIn.length >= 3, 'header Sign in, Get started and the registries section link to the portal');
-		assert.match(home, /id="portal"/);
-		assert.match(read('skills.html'), /href="https:\/\/portal\.[^"]+\/signin"/, 'header on other pages');
+	if (process.env.CONSOLE_LIVE === '1') {
+		const signIn = [...home.matchAll(/href="(https:\/\/console\.[^"]+\/signin)"/g)];
+		assert.ok(signIn.length >= 3, 'header Sign in, Get started and the registries section link to the console');
+		assert.match(home, /id="console"/);
+		assert.match(read('skills.html'), /href="https:\/\/console\.[^"]+\/signin"/, 'header on other pages');
 	} else {
-		for (const f of text) assert.doesNotMatch(read(f), /\/signin|id="portal"/, f);
+		for (const f of text) assert.doesNotMatch(read(f), /\/signin|id="console"/, f);
 	}
 });

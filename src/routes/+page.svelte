@@ -34,7 +34,7 @@
 		your repository.
 	</p>
 	<div class="actions">
-		{#if data.portalLive}
+		{#if data.consoleLive}
 			<a class="button primary" href={SIGN_IN_URL}>Get started</a>
 			<a class="button" href="/skills">Browse skills</a>
 		{:else}
@@ -87,9 +87,9 @@ ${example}
 	</ol>
 </section>
 
-{#if data.portalLive}
-	<section aria-labelledby="portal">
-		<h2 id="portal">Your own registries</h2>
+{#if data.consoleLive}
+	<section aria-labelledby="console">
+		<h2 id="console">Your own registries</h2>
 		<p>
 			Sign in with GitHub to connect your organisation's private registries and see which skills your
 			agents load.
