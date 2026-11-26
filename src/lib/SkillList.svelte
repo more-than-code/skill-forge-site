@@ -4,7 +4,7 @@
 	let { skills }: { skills: Skill[] } = $props();
 </script>
 
-<ul class="skills">
+<ul class="skills" role="list">
 	{#each skills as skill (skill.name)}
 		<li>
 			<a class="name" href="/skills/{skill.name}">{skill.name}</a>

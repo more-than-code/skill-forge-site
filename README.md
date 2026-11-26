@@ -50,7 +50,7 @@ claim is absent from the output while its flag is off, so the site says only wha
 cd site
 pnpm install --frozen-lockfile
 pnpm check   # svelte-check, warnings fail
-pnpm test    # catalog script and snapshot tests
+pnpm test    # catalog parser and validation, and the committed snapshot
 pnpm build   # vite build + postbuild prune -> build/
 pnpm guard   # tests/guard.build.mjs over build/
 ```
@@ -60,7 +60,7 @@ pnpm guard   # tests/guard.build.mjs over build/
 `guard` checks: no `.js` file or `<script>`; every absolute URL is on the site's hosts or under
 `github.com/more-than-code/skill-forge`; a page and a sitemap entry for every skill and tag; `404.html`
 with absolute asset URLs; `_headers`, `robots.txt` and `llms.txt` present and no `_redirects`; no
-robots meta; Sign in only with `PORTAL_LIVE=1`.
+robots meta; no inline styles (the CSP in `_headers` allows only `style-src 'self'`); every sitemap URL is a built page and `llms.txt` lists every skill; Sign in and the registries section only with `PORTAL_LIVE=1`, pointing at the portal. CI runs build and guard with the flag off and on.
 
 ## Deploy (on Joe's yes)
 
@@ -80,10 +80,10 @@ DRY_RUN=1 sh scripts/deploy.sh                     # every gate, no upload, read
 ```
 
 `deploy.sh` refuses a dirty tree; for production it also refuses a commit that is not on
-`origin/dev`, a build that still names the placeholder domain, and an unset `PORTAL_LIVE`. It runs
+`origin/dev`, placeholder domains still in `src/lib/links.ts`, and an unset `PORTAL_LIVE`, before any gate. It runs
 install, check, test, build and guard, checks the tree and HEAD did not change, then runs
 `wrangler pages deploy build --project-name skill-forge-site --branch <branch> --commit-hash <HEAD>`.
 The project's production branch is `main`; any other branch is a preview.
 
-`_headers` adds `nosniff`, `X-Frame-Options: DENY` and `Referrer-Policy: no-referrer` everywhere,
+`_headers` adds `nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: no-referrer`, a strict Content-Security-Policy and a Permissions-Policy everywhere,
 and `X-Robots-Tag: noindex` on `pages.dev` hosts and a direct `/404`, so previews are never indexed.

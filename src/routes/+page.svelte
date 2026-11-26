@@ -1,11 +1,17 @@
 <script lang="ts">
 	import Head from '$lib/Head.svelte';
-	import { catalog, snapshotDate, tagCounts } from '$lib/catalog';
+	import { catalog, findSkill, snapshotDate, tagCounts } from '$lib/catalog';
 	import { REPO_URL, SIGN_IN_URL, sourceUrl } from '$lib/links';
 
 	let { data } = $props();
 	const tags = tagCounts();
 	const shortCommit = catalog.source.commit.slice(0, 7);
+	// The example pins two skills at their snapshot versions, so it never goes stale.
+	const example = ['coding-discipline', 'security-baseline']
+		.map(findSkill)
+		.filter((skill) => skill !== undefined)
+		.map((skill) => `      "${skill.name}": "^${skill.version}"`)
+		.join(',\n');
 	const stats = [
 		{ value: catalog.counts.skills, label: 'public skills' },
 		{ value: tags.length, label: 'tags' },
@@ -40,7 +46,7 @@
 
 <section aria-labelledby="stats">
 	<h2 id="stats">The public catalog</h2>
-	<ul class="stats">
+	<ul class="stats" role="list">
 		{#each stats as stat (stat.label)}
 			<li><strong>{stat.value}</strong><span>{stat.label}</span></li>
 		{/each}
@@ -65,8 +71,7 @@
   "schemaVersion": 2,
   "skills": {
     "dependencies": {
-      "coding-discipline": "^0.3.1",
-      "security-baseline": "^0.1.0"
+${example}
     }
   }
 }`}</code></pre>
@@ -97,7 +102,7 @@
 	<h2 id="tags">Popular tags</h2>
 	<p class="tag-list">
 		{#each tags.slice(0, 16) as { tag, count } (tag)}
-			<a class="chip" href="/tags/{tag}">{tag} <span aria-label="{count} skills">({count})</span></a>
+			<a class="chip" href="/tags/{tag}">{tag} ({count})</a>
 		{/each}
 	</p>
 	<p><a href="/skills">All {catalog.counts.skills} skills</a></p>

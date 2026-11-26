@@ -6,8 +6,8 @@
 // reproducible from its commit. The snapshot records the skill-forge commit it came from.
 // Refresh it from the commit you want published (normally skill-forge main).
 import { execFileSync } from 'node:child_process';
-import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
-import { join, relative, resolve } from 'node:path';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildCatalog, frontmatterDescription } from './catalog-lib.mjs';
 
@@ -24,20 +24,18 @@ if (git('status', '--porcelain') !== '') {
 	process.exit(1);
 }
 
-/** @param {string} dir @returns {string[]} */
-function listFiles(dir) {
-	return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
-		const path = join(dir, entry.name);
-		return entry.isDirectory() ? listFiles(path) : [path];
-	});
-}
-
 const registry = JSON.parse(readFileSync(join(repo, 'registry.json'), 'utf8'));
 const catalog = buildCatalog(registry, (skill) => {
-	const dir = join(repo, skill.path);
+	// buildCatalog has already checked skill.path against inventory/skills/<name>. Only tracked files
+	// are listed, so nothing git-ignored in the checkout can reach the public snapshot.
+	const files = git('ls-files', '-z', '--', skill.path)
+		.split('\0')
+		.filter(Boolean)
+		.map((file) => file.slice(skill.path.length + 1))
+		.sort();
 	return {
-		description: frontmatterDescription(readFileSync(join(dir, 'SKILL.md'), 'utf8')),
-		files: listFiles(dir).map((file) => relative(dir, file)).sort()
+		description: frontmatterDescription(readFileSync(join(repo, skill.path, 'SKILL.md'), 'utf8')),
+		files
 	};
 });
 

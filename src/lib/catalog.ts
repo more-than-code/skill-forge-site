@@ -16,7 +16,7 @@ export function tagCounts(): { tag: string; count: number }[] {
 	for (const skill of data.skills) for (const tag of skill.tags) counts.set(tag, (counts.get(tag) ?? 0) + 1);
 	return [...counts]
 		.map(([tag, count]) => ({ tag, count }))
-		.sort((a, b) => b.count - a.count || a.tag.localeCompare(b.tag));
+		.sort((a, b) => b.count - a.count || (a.tag < b.tag ? -1 : a.tag > b.tag ? 1 : 0));
 }
 
 export function skillsWithTag(tag: string): Skill[] {
