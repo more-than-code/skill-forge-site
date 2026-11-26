@@ -1,0 +1,653 @@
+{
+	"source": {
+		"repo": "more-than-code/skill-forge",
+		"commit": "29f16eaa23a10594caddf668c18637db5edf22b5",
+		"committedAt": "2026-11-25T19:15:34+13:00"
+	},
+	"registryVersion": "1.4.0",
+	"skills": [
+		{
+			"name": "api-contracts",
+			"version": "0.1.0",
+			"tags": [
+				"contracts",
+				"tier-3"
+			],
+			"description": "Enforce API contract versioning, backward compatibility, and consumer-driven contract testing. Activate for Tier 3 changes modifying public APIs, output schemas, or shared interfaces where consumers cannot all update simultaneously.",
+			"path": "inventory/skills/api-contracts",
+			"files": [
+				"SKILL.md"
+			]
+		},
+		{
+			"name": "audio-webkit-cleanup",
+			"version": "0.1.1",
+			"tags": [
+				"audio",
+				"webkit",
+				"ios",
+				"portable"
+			],
+			"description": "Portable WebKit/iOS rules for tearing down HTMLAudioElement, AudioContext, getUserMedia, and MediaRecorder so audio does not die mid-session. Use when adding browser audio playback or recording, debugging silent audio until tab kill on iOS Safari, or reviewing mic/TTS loops.",
+			"path": "inventory/skills/audio-webkit-cleanup",
+			"files": [
+				"SKILL.md"
+			]
+		},
+		{
+			"name": "audit-trail",
+			"version": "0.1.0",
+			"tags": [
+				"provenance",
+				"tier-3"
+			],
+			"description": "Enforce integrity verification, manual correction logging, and change provenance tracking. Activate when agents and humans both modify the same artifacts, when outputs must be auditable, or when derived artifacts must stay in sync with their sources.",
+			"path": "inventory/skills/audit-trail",
+			"files": [
+				"SKILL.md"
+			]
+		},
+		{
+			"name": "aws-toolkit-skills",
+			"version": "0.1.0",
+			"tags": [
+				"aws",
+				"skills",
+				"skill-forge",
+				"workstation-only"
+			],
+			"description": "Fetch an AWS Agent Toolkit skill into the current project's `.agents/skills` when a task needs it. Activate when the user asks to add, install, fetch, or update an AWS skill for a project, or when an AWS task has no matching skill in that project yet. Covers catalog search, per-file download, and declaring the result as a Skill Forge local skill. The home-directory installers `aws configure agent-toolkit` and `aws agent-toolkit add-skill` are the wrong tool for this.",
+			"path": "inventory/skills/aws-toolkit-skills",
+			"files": [
+				"SKILL.md"
+			]
+		},
+		{
+			"name": "claude-project-steward",
+			"version": "0.2.2",
+			"tags": [
+				"cloud",
+				"claude-projects",
+				"setup",
+				"diagnosis"
+			],
+			"description": "Set up, check and repair how a Claude Project's threads get their instructions, skills and subagents from Skill Forge — the cloud environment's setup script, the topic line, the Project instructions and each repository's CLAUDE.md/AGENTS.md. Activate when the owner asks to set up Skill Forge for a Project, to check a Project's setup or context, why threads miss rules or skills, or why rules load twice; also when a thread notices its workflow rules, skills or subagents missing or duplicated.",
+			"path": "inventory/skills/claude-project-steward",
+			"files": [
+				"SKILL.md"
+			]
+		},
+		{
+			"name": "code-quality",
+			"version": "0.1.1",
+			"tags": [
+				"implementation",
+				"review-lens"
+			],
+			"description": "Review code for design quality, clarity, duplication, naming, error handling, and refactoring opportunities. Activate by default on implementation tasks for readability and maintainability, and during Tier 2/3 code quality and refactoring review lenses.",
+			"path": "inventory/skills/code-quality",
+			"files": [
+				"SKILL.md"
+			]
+		},
+		{
+			"name": "codex-config-toml",
+			"version": "0.1.0",
+			"tags": [
+				"codex",
+				"config",
+				"toml",
+				"gotchas"
+			],
+			"description": "Gotchas and safe patterns for editing ~/.codex/config.toml (approval_policy, sandbox_mode, model_context_window, model catalog). Activate when changing Codex config, debugging approval prompts despite \"full-auto\"/\"never\", context window overrides not applying, or verifying config with doctor vs exec.",
+			"path": "inventory/skills/codex-config-toml",
+			"files": [
+				"SKILL.md"
+			]
+		},
+		{
+			"name": "coding-discipline",
+			"version": "0.3.1",
+			"tags": [
+				"implementation",
+				"behavior"
+			],
+			"description": "Behavioral guardrails against common LLM coding pitfalls: overengineering, hidden assumptions, drive-by edits, vague execution, post-hoc documentation, diagnosing a runtime failure by re-reading source instead of observing it, and unsafe git commits (outside workspace; main/master without asking). Activate on all implementation tasks alongside security-baseline, and when a bug resists its first explanation. Derived from Andrej Karpathy's observations on LLM coding failure modes.",
+			"path": "inventory/skills/coding-discipline",
+			"files": [
+				"EXAMPLES.md",
+				"SKILL.md"
+			]
+		},
+		{
+			"name": "data-migration",
+			"version": "0.1.0",
+			"tags": [
+				"data",
+				"tier-3"
+			],
+			"description": "Plan database schema changes, data format changes, storage restructuring, and backfill strategies. Activate for Tier 3 changes involving schema changes, data transformations, or storage migrations that require rollback-for-data planning.",
+			"path": "inventory/skills/data-migration",
+			"files": [
+				"SKILL.md"
+			]
+		},
+		{
+			"name": "defect-drainer-intake",
+			"version": "0.1.1",
+			"tags": [
+				"defects",
+				"intake",
+				"triage",
+				"human-in-the-loop",
+				"harness"
+			],
+			"description": "File machine-detected findings into the Defect Drainer inventory as defects with evidence, and run the human adjudication loop over them. Covers the /api/intake contract (multipart fields, normalize modes, the async 202), bridge discipline for an automated detector (idempotency, unmodified evidence, filing without pre-filtering), and what an operator does with a queue of findings. Use when wiring a parity harness, vision review, a11y scan, lint sweep, or any other detector into Defect Drainer; when findings need a human decision before anyone writes code; or when a script posted to intake and you need to know whether anything was actually created.",
+			"path": "inventory/skills/defect-drainer-intake",
+			"files": [
+				"SKILL.md"
+			]
+		},
+		{
+			"name": "defect-drainer-test-plans",
+			"version": "0.2.0",
+			"tags": [
+				"testing",
+				"test-plans",
+				"qa",
+				"simulator",
+				"human-in-the-loop",
+				"harness"
+			],
+			"description": "Inventory a product's test plan in Defect Drainer and get it carried out — by you in this session, or by a DD test job on the simulator — with screenshot evidence that a human reviews. Covers writing steps an agent can execute and a reviewer can judge, the plan upsert contract (stable keys, created/changed/version), starting a run (execute manual or agent, refs, test-account references), recording results and evidence as an agent session, polling a DD job, exporting a plan as one Markdown file (dd-test-plan/1) for an executor that cannot reach DD and carrying out such an export, and why review and defect filing stay human decisions. Use when asked to write, update, or run a test plan or smoke test for an app Defect Drainer manages; to prove a build works on the simulator with evidence; to start or check a DD test run; to hand a plan to another agent or a person, or execute a `.test-plan.md` file you were given; or when a test account or password is involved.",
+			"path": "inventory/skills/defect-drainer-test-plans",
+			"files": [
+				"SKILL.md"
+			]
+		},
+		{
+			"name": "deployment-strategy",
+			"version": "0.1.0",
+			"tags": [
+				"operations",
+				"tier-3"
+			],
+			"description": "Plan deployment strategy including blue-green, canary, rolling, and feature flag approaches. Activate for Tier 3 changes that cannot be deployed atomically, carry production risk, or require coordinated rollout across environments.",
+			"path": "inventory/skills/deployment-strategy",
+			"files": [
+				"SKILL.md"
+			]
+		},
+		{
+			"name": "design-sync-flutter",
+			"version": "0.2.3",
+			"tags": [
+				"design",
+				"flutter",
+				"claude-design"
+			],
+			"description": "Sync a Flutter app's design system to claude.ai/design (Claude Design) as a spec-style project — ThemeData/ColorScheme/TextTheme extracted into design tokens, widget catalog turned into preview cards and usage docs, plus a design-to-Flutter mapping so exported designs translate back to widgets. The official /design-sync skill is React-only and cannot ingest Flutter at all. Use whenever the user wants their Flutter theme, widgets, or design language available in Claude Design, asks to sync a Flutter design system to claude.ai/design, or wants Claude Design output to match their Flutter app.",
+			"path": "inventory/skills/design-sync-flutter",
+			"files": [
+				"SKILL.md",
+				"references/ds-layout.md"
+			]
+		},
+		{
+			"name": "design-sync-svelte",
+			"version": "0.4.3",
+			"tags": [
+				"design",
+				"svelte",
+				"claude-design"
+			],
+			"description": "Sync a Svelte 5 / SvelteKit design system to claude.ai/design (Claude Design). The official /design-sync skill is React-only and fails on Svelte repos; this skill produces the same claude.ai/design project layout from Svelte sources — design tokens, server-rendered component preview cards, usage docs, and an optional custom-elements runtime bundle — and uploads it with the DesignSync tool. Use whenever the user wants their Svelte, SvelteKit, shadcn-svelte, or bits-ui components/design system in Claude Design, mentions /design-sync failing on a Svelte repo, or asks to sync Svelte UI to claude.ai/design.",
+			"path": "inventory/skills/design-sync-svelte",
+			"files": [
+				"SKILL.md",
+				"references/custom-elements.md",
+				"references/ds-layout.md"
+			]
+		},
+		{
+			"name": "disk-cleanup",
+			"version": "0.1.0",
+			"tags": [
+				"macos",
+				"disk",
+				"android",
+				"ios",
+				"containers",
+				"workstation-only"
+			],
+			"description": "Free disk space on a developer Mac: regenerable caches, unused container images, old simulator runtimes, extra simulator devices, and unused or older Android SDK packages. Keeps running containers, named volumes, pinned toolchains, and the booted simulator. Use when the user says clean up disk, free disk space, disk full, prune simulators, remove an old NDK or SDK package, or runs /disk-cleanup.",
+			"path": "inventory/skills/disk-cleanup",
+			"files": [
+				"SKILL.md"
+			]
+		},
+		{
+			"name": "external-worker-delegation",
+			"version": "0.8.8",
+			"tags": [
+				"delegation",
+				"process",
+				"cost",
+				"workstation-only"
+			],
+			"description": "Run an external agent CLI as the worker for most of a task — planning, implementation, validation, review — while the primary agent shrinks to orchestrator and reviewer of record. Covers the cost asymmetry that motivates it, the mode switch off in-harness subagents, worktree isolation and the dirty-tree fallback for when a checkout would omit uncommitted code, per-phase brief structure, the acceptance ladder, independent review in a fresh worker session, and dual-budget accounting. Activate when delegating bulk work to a cheaper or faster external agent, when the primary's token budget is the binding constraint, when deciding what an orchestrator must keep versus hand off, or when reviewing work the primary did not watch get written.",
+			"path": "inventory/skills/external-worker-delegation",
+			"files": [
+				"SKILL.md",
+				"dispatch.sh"
+			]
+		},
+		{
+			"name": "failure-analysis",
+			"version": "0.1.0",
+			"tags": [
+				"operations",
+				"tier-3"
+			],
+			"description": "Analyze failure modes, unsafe intermediate states, and partial rollout risks. Activate for Tier 3 changes involving distributed systems, async operations, multi-step migrations, or any change where partial deployment creates inconsistent state.",
+			"path": "inventory/skills/failure-analysis",
+			"files": [
+				"SKILL.md"
+			]
+		},
+		{
+			"name": "frontend-engineering",
+			"version": "0.3.1",
+			"tags": [
+				"frontend",
+				"architecture"
+			],
+			"description": "Review browser-based frontend architecture, component design, state management, accessibility, performance, and styling. Use this as the shared entrypoint for framework-agnostic frontend guidance, then load framework companion files such as `react.md`, `svelte.md`, or `sveltekit.md` when the implementation is stack-specific.",
+			"path": "inventory/skills/frontend-engineering",
+			"files": [
+				"SKILL.md",
+				"react.md",
+				"svelte.md",
+				"sveltekit.md"
+			]
+		},
+		{
+			"name": "fvm-flutter",
+			"version": "0.2.3",
+			"tags": [
+				"flutter",
+				"fvm",
+				"dart",
+				"sdk"
+			],
+			"description": "Use Flutter Version Management (FVM) as the only Flutter SDK entrypoint for projects that pin a version. Covers pin discovery (.fvmrc / .fvm/), fvm flutter and fvm dart commands, install/use, agent sandboxes (HOME/PUB_CACHE redirects, and the FLUTTER_ROOT/bin/cache writes that force a cloned SDK when the pin is read-only), and avoiding bare flutter / Source Control noise from SDK checkouts. Activate when working in a Flutter/Dart repo, running analyze/test/build, writing parity or CI scripts, or when tempted to copy the SDK into the workspace.",
+			"path": "inventory/skills/fvm-flutter",
+			"files": [
+				"SKILL.md"
+			]
+		},
+		{
+			"name": "grok-build-harness",
+			"version": "0.5.14",
+			"tags": [
+				"grok",
+				"delegation",
+				"cli",
+				"harness",
+				"workstation-only"
+			],
+			"description": "Harness for delegating a build to the Grok Build CLI (`grok`), installed locally or on a remote Linux host reached over SSH: capturing its output with the four headless formats, reading the `end` event to tell completion from turn exhaustion, sandbox write boundaries and custom sandbox profiles, the model-judged `--permission-mode auto` gate, per-session cost via `grok usage`, the default context window, fast mode, Imagine image/video tool usage, and self-contained brief structure. Activate when handing work to Grok, spawning `grok` headlessly, streaming or parsing grok output, tracking its cost or reading its context window, debugging a grok run that exits 0 having done nothing, generating images/video with image_gen / image_edit / image_to_video, driving grok over ACP (`grok agent stdio` / `serve`), running grok on a remote Linux host over SSH, or signing a headless host in with `grok login --device-auth`.",
+			"path": "inventory/skills/grok-build-harness",
+			"files": [
+				"EXAMPLES.md",
+				"SKILL.md"
+			]
+		},
+		{
+			"name": "ica-llm-gateway",
+			"version": "0.2.0",
+			"tags": [
+				"llm",
+				"gateway",
+				"ica",
+				"workstation-only"
+			],
+			"description": "Point a project, agent CLI, or app at LLMs hosted on the IBM Consulting Advantage (ICA) gateway on Service Essentials. Maps the machine's ICA_API_KEY and ICA_BASE_API_URL onto a project's own LLM_API_URL / LLM_API_KEY style variables, and covers the API host, the /v1 prefix each client appends, the User-Agent the edge requires, model ids, and the Claude Code and Codex model pickers. Ships scripts/probe.py, which records this key's catalog and per-model behaviour under ~/.ica-llm. Use when the target is ICA, Service Essentials, or servicesessentials.ibm.com — including a Codex model provider or Claude Code's ANTHROPIC_BASE_URL aimed at that gateway — or when choosing a model id or parameter for it. Not for other gateways or proxies.",
+			"path": "inventory/skills/ica-llm-gateway",
+			"files": [
+				"SKILL.md",
+				"scripts/probe.py"
+			]
+		},
+		{
+			"name": "llm-integration",
+			"version": "0.1.0",
+			"tags": [
+				"llm",
+				"workflow"
+			],
+			"description": "Enforce validation, transparency, and safe defaults for LLM calls inside automated workflows. Activate when building or reviewing any system that invokes an LLM as a processing step — covers output validation, prompt design, cost tracking, merge discipline, and fallback behavior.",
+			"path": "inventory/skills/llm-integration",
+			"files": [
+				"SKILL.md"
+			]
+		},
+		{
+			"name": "llm-json-portable",
+			"version": "0.1.1",
+			"tags": [
+				"llm",
+				"portable",
+				"json"
+			],
+			"description": "Portable convention for JSON-from-LLM over OpenAI-compatible Chat Completions without provider structured output. Use when building or reviewing LLM endpoints that must work across OpenAI-compatible providers, when tempted to use generateObject/JSON mode, when debugging fence-wrapped or quote-broken model JSON, or when the user mentions portable LLM JSON parsing.",
+			"path": "inventory/skills/llm-json-portable",
+			"files": [
+				"SKILL.md"
+			]
+		},
+		{
+			"name": "migration-deprecation",
+			"version": "0.1.0",
+			"tags": [
+				"contracts",
+				"tier-3"
+			],
+			"description": "Plan and execute version migrations and contract deprecation across runtime, tests, docs, and consumers. Activate for Tier 3 changes that modify contracts with active consumers, version migrations (v1 to v2), or feature deprecation.",
+			"path": "inventory/skills/migration-deprecation",
+			"files": [
+				"SKILL.md"
+			]
+		},
+		{
+			"name": "performance-analysis",
+			"version": "0.1.0",
+			"tags": [
+				"performance",
+				"review-lens"
+			],
+			"description": "Identify performance bottlenecks and plan optimization strategies. Activate for Tier 2/3 changes affecting latency, throughput, resource usage, or scaling.",
+			"path": "inventory/skills/performance-analysis",
+			"files": [
+				"SKILL.md"
+			]
+		},
+		{
+			"name": "podman-utilization",
+			"version": "0.1.0",
+			"tags": [
+				"containers",
+				"operations",
+				"workstation-only"
+			],
+			"description": "Guidance for container workflows, local services, compose files, image builds, logs, port checks, and Docker-like commands when the environment may provide Podman instead of Docker.",
+			"path": "inventory/skills/podman-utilization",
+			"files": [
+				"SKILL.md"
+			]
+		},
+		{
+			"name": "product-parity",
+			"version": "0.14.2",
+			"tags": [
+				"parity",
+				"mirroring",
+				"porting",
+				"interaction",
+				"api",
+				"visual-regression"
+			],
+			"description": "Verify that a mirrored or ported client faithfully reproduces its source of truth — screens, look, geometry, design tokens, copy/i18n, interaction behaviour, and the API calls behind them — using a capture-driven parity harness rather than code review. Use when porting or mirroring a product to a second client (web ↔ mobile or any pair), auditing feature/screen parity, investigating \"the two clients differ\" reports, checking that Back and in-app navigation behave the same on both clients, or when a parity phase was marked complete on static-audit evidence alone. Covers capture harness design, dynamic-state capture via named prep steps, journeys between screens (Back, dead ends, push versus replace), per-screen/per-lens working discipline, false-positive control, and coverage accounting.",
+			"path": "inventory/skills/product-parity",
+			"files": [
+				"DYNAMIC-STATES.md",
+				"JOURNEYS.md",
+				"RECIPES.md",
+				"REFERENCE.md",
+				"SKILL.md",
+				"scripts/parity-api.mjs",
+				"scripts/parity-assets.mjs",
+				"scripts/parity-columns.mjs",
+				"scripts/parity-freshness.mjs",
+				"scripts/parity-gate.mjs",
+				"scripts/parity-geometry.mjs",
+				"scripts/parity-interactive.mjs",
+				"scripts/parity-inventory.mjs",
+				"scripts/parity-journeys.mjs",
+				"scripts/parity-names.mjs",
+				"scripts/parity-navigation.mjs",
+				"scripts/parity-review.mjs",
+				"scripts/parity-session.mjs",
+				"scripts/parity-strings.mjs",
+				"scripts/parity.config.example.json"
+			]
+		},
+		{
+			"name": "production-readiness",
+			"version": "0.1.0",
+			"tags": [
+				"operations",
+				"tier-3"
+			],
+			"description": "Verify production readiness for cross-service coordination, observability (metrics, alerting, logging), and infrastructure modifications (IaC, databases, networking). Activate for Tier 3 changes requiring multi-service deployment ordering, production monitoring, infrastructure provisioning, or any change affecting production behavior that needs observability.",
+			"path": "inventory/skills/production-readiness",
+			"files": [
+				"SKILL.md"
+			]
+		},
+		{
+			"name": "role-end-user",
+			"version": "0.1.1",
+			"tags": [
+				"roles",
+				"acceptance",
+				"testing",
+				"user",
+				"workstation-only"
+			],
+			"description": "Doctrine for an End User session — the role that makes no code changes and operates the product the way a real user would, doing the owner's real tasks in it, running acceptance and release rechecks, and reporting what is broken. Covers account and sign-in rules, test versus real accounts, per-write approval, using the product's own features instead of doing their work by hand, verifying every write by diff and hash, a written source of truth for user data, bug-report format, mobile and theme rechecks, routing findings, and pausing for restarts. Activate in a session titled or acting as end user, user, tester, acceptance or a user-persona session; load session-roles with it.",
+			"path": "inventory/skills/role-end-user",
+			"files": [
+				"SKILL.md"
+			]
+		},
+		{
+			"name": "role-main-dev",
+			"version": "0.3.3",
+			"tags": [
+				"roles",
+				"development",
+				"implementation",
+				"workstation-only"
+			],
+			"description": "Doctrine for a Main Dev session — the role that owns specs, code, tests, commits and merges for a product, and hands releases to Ops, user-data work to End User, and design questions to Product Design. Covers per-step approvals, Product Design briefs feeding the Tier 3 spec, spec side sessions, handing an approved spec to Slice Devs instead of building in the spec session, commit and push rules, worktree isolation from shared dev servers, what counts as done (seen working in the running app, not gates alone), proving contracts and LLM features with real round trips, scope discipline, and reporting what is not built. Activate in a session titled or acting as Main Dev, Dev, or the implementation hub; load session-roles with it.",
+			"path": "inventory/skills/role-main-dev",
+			"files": [
+				"SKILL.md"
+			]
+		},
+		{
+			"name": "role-ops",
+			"version": "0.1.0",
+			"tags": [
+				"roles",
+				"operations",
+				"deployment",
+				"workstation-only"
+			],
+			"description": "Doctrine for an Ops session — the role that releases, operates hosts and environments, changes production data, and runs shared dev infrastructure, usually as a child of Main Dev. Covers step-by-step approval of host changes with exact commands, secrets handling, the production data-change sequence, cutovers with rollback triggers, release proof, destructive-command rules, checking evidence before reporting it, and staying out of product code. Activate in a session titled or acting as ops, deploy worker, release or operations; load session-roles with it.",
+			"path": "inventory/skills/role-ops",
+			"files": [
+				"SKILL.md"
+			]
+		},
+		{
+			"name": "role-product-design",
+			"version": "0.1.1",
+			"tags": [
+				"roles",
+				"marketing",
+				"ux",
+				"research",
+				"workstation-only"
+			],
+			"description": "Doctrine for a Product Design session — one role covering marketing, business analysis and UI/UX design: market and competitor research, positioning and copy, pricing and vendor research, analytics reports, legal and compliance audits, briefs and mocks for Main Dev. Covers the brief-and-hand-off boundary (no code edits), previewing before proposing, checking claims and checklists against the real product, keeping real customer data out of visuals, analytics honesty, and the owner's account and terms boundary. Activate in a session titled or acting as marketing, BA, UX, design, research or analytics; load session-roles with it.",
+			"path": "inventory/skills/role-product-design",
+			"files": [
+				"SKILL.md"
+			]
+		},
+		{
+			"name": "role-slice-dev",
+			"version": "0.2.1",
+			"tags": [
+				"roles",
+				"development",
+				"worktree",
+				"workstation-only"
+			],
+			"description": "Doctrine for a Slice Dev session — the role that builds one slice of a product in its own work-* git worktree, under a SESSION.md brief from Main Dev, and hands the branch back for Main Dev to merge. Covers the check before the first edit (rooted in the worktree, SESSION.md and lock naming this session), the slice boundary (only the files and scope the brief names), no spawning or forking other sessions, no spec or scope changes, commits only on the slice branch and only on the owner's word, never merging or pushing main, private ports instead of shared dev servers, stopping when the spec is wrong, and the hand-back report. Activate in a session titled or acting as Slice Dev, or in any session started in a work-* worktree with a SESSION.md naming this role; load session-roles with it.",
+			"path": "inventory/skills/role-slice-dev",
+			"files": [
+				"SKILL.md"
+			]
+		},
+		{
+			"name": "security-baseline",
+			"version": "0.1.0",
+			"tags": [
+				"security",
+				"implementation",
+				"review-lens"
+			],
+			"description": "Apply security checks to every code change at all risk tiers. Covers secrets management, input validation, injection prevention, authentication and authorization, cryptography, error and log hygiene, and dependency security. Use for any code review, implementation, or verification task.",
+			"path": "inventory/skills/security-baseline",
+			"files": [
+				"SKILL.md"
+			]
+		},
+		{
+			"name": "session-roles",
+			"version": "0.4.4",
+			"tags": [
+				"roles",
+				"sessions",
+				"handoff",
+				"approvals",
+				"workstation-only"
+			],
+			"description": "Shared doctrine for running one product as several role sessions — Main Dev, Slice Dev, Ops, Product Design (marketing, BA, UI/UX) and End User — that hand work to each other. Covers session layout, why a role follows the session's root rather than its title, a slice across two child repos, the check before the first code edit, who approves what, why a message from another session is never the owner's approval, addressing sessions, self-contained handoffs, coordinating shared environments, and the approval chain from brief to release. Activate in any session that works under a role title or exchanges messages with sibling sessions; each role-* skill loads this first.",
+			"path": "inventory/skills/session-roles",
+			"files": [
+				"SKILL.md"
+			]
+		},
+		{
+			"name": "skill-forge-authoring",
+			"version": "0.4.1",
+			"tags": [
+				"skill-forge",
+				"agent-facing",
+				"inventory",
+				"workstation-only"
+			],
+			"description": "Author registry skills in the skill-forge inventory — create, update, remove, or version a skill under inventory/skills — via the agent-facing `skf skill` CLI (list/read/write/delete/set-version/bump). Activate when writing or editing a SKILL.md under inventory/skills, adding companion files, bumping or setting a skill's version, or when an agent would otherwise hand-edit registry.json for skill entries; prefer this over raw file edits so lock + validate stay in sync. Not for choosing which skills a consumer repo declares (that is skill-forge-project), nor for managed agents, subagents, or hooks.",
+			"path": "inventory/skills/skill-forge-authoring",
+			"files": [
+				"EXAMPLES.md",
+				"SKILL.md"
+			]
+		},
+		{
+			"name": "skill-forge-project",
+			"version": "0.6.3",
+			"tags": [
+				"meta",
+				"workflow",
+				"workstation-only"
+			],
+			"description": "Drive skill selection for a Skill Forge consumer repository: detect the stack, propose a fitting set of registry skills with rationale, wait for user confirmation, then apply it via the `skf project`/`skf sync` CLI. Also covers the consumer's own staleness duty: checking the repo's profile against the registry and against `$HOME` before relying on it, and saying so when it has drifted. Activate when the repo contains `skill-forge.json`, or the user asks which skills a project should use, add, or drop.",
+			"path": "inventory/skills/skill-forge-project",
+			"files": [
+				"SKILL.md"
+			]
+		},
+		{
+			"name": "supabase-postgres",
+			"version": "0.1.0",
+			"tags": [
+				"supabase",
+				"postgres",
+				"database"
+			],
+			"description": "Use a Supabase project as ordinary Postgres from an app that already has its own sessions. Covers the transaction and session poolers, the TLS certificate-verification trade-off, one connection per function, and why a Vercel Marketplace install does not attach an existing database. Use when connecting pg, Drizzle, or another Postgres client to Supabase, or when choosing Marketplace versus a project created in Supabase.",
+			"path": "inventory/skills/supabase-postgres",
+			"files": [
+				"SKILL.md"
+			]
+		},
+		{
+			"name": "testing-strategy",
+			"version": "0.1.4",
+			"tags": [
+				"testing",
+				"review-lens"
+			],
+			"description": "Verify test coverage, test quality, and edge case identification. Activate during Tier 2/3 test coverage review lens, when writing specs that define test strategy, or when adding tests to code with no existing coverage.",
+			"path": "inventory/skills/testing-strategy",
+			"files": [
+				"SKILL.md"
+			]
+		},
+		{
+			"name": "ui-portability-baseline",
+			"version": "0.2.0",
+			"tags": [
+				"frontend",
+				"review-lens"
+			],
+			"description": "Lightweight UI maintainability and portability baseline for frontend work that should remain easy to migrate across repositories or align with a stricter design system later, including components that must survive being embedded in a host container (side panel, drawer, split view, modal) where viewport breakpoints, viewport units and fixed positioning stop meaning what they say. Use when implementing or reviewing UI where full design-system governance is not required yet.",
+			"path": "inventory/skills/ui-portability-baseline",
+			"files": [
+				"SKILL.md"
+			]
+		},
+		{
+			"name": "umbrella-workspace",
+			"version": "0.13.2",
+			"tags": [
+				"multi-repo",
+				"cooperation",
+				"handoff",
+				"worktree",
+				"workstation-only"
+			],
+			"description": "Cooperation rules for multi-repo (umbrella) workspaces: where docs and tasks live, self-contained task entries, pointer stubs in child repos, handoff checklists, plan-vs-status split, where skill profiles belong (every session root declares its own; a session reads only its own root), and parallel agent sessions via git worktrees (SESSION.md briefs, AGENTS load hooks, work-* worktrees inside the umbrella, worktree vs copy, retire on primary). Use when working in a multi-repo container directory, starting or resuming cross-repo plans, writing umbrella tasks/todo.md, adding pointer stubs, scaffolding or vendoring skills into a child repo, seeding a second checkout for parallel work, or when the user mentions umbrella workspace, cross-repo handoff, multi-repo cooperation, worktree, work-* folder, or parallel session. Slash: /umbrella-workspace.",
+			"path": "inventory/skills/umbrella-workspace",
+			"files": [
+				"PARALLEL-WORKTREES.md",
+				"SKILL.md"
+			]
+		},
+		{
+			"name": "vercel-deploy",
+			"version": "0.1.0",
+			"tags": [
+				"vercel",
+				"deploy",
+				"node"
+			],
+			"description": "Deploy a Node app with the Vercel CLI. Covers the working directory, the framework preset, the function region versus the build region, env secrets, redeploying after an env change, Deployment Protection between projects, and a custom domain that keeps its existing nameservers. Use when deploying or changing a Vercel project, attaching a domain, or debugging a function that builds in one region and runs in another.",
+			"path": "inventory/skills/vercel-deploy",
+			"files": [
+				"SKILL.md"
+			]
+		}
+	],
+	"counts": {
+		"skills": 42,
+		"subagentSets": 4,
+		"hookSets": 2,
+		"instructionVariants": 2
+	}
+}
