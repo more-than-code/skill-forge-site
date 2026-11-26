@@ -1,8 +1,10 @@
 // Addresses for the public site, a static site on Cloudflare Pages, separate from the console.
-// The domains are placeholders until Joe picks them: scripts/deploy.sh refuses a production
-// deploy while any ".example" host is in the build.
+// The site lives at the root domain (www redirects to it) and the console at console.<domain>
+// (Joe, 2026-11-26). The domain is a placeholder until Joe picks it: scripts/deploy.sh refuses a
+// production deploy while src/lib/links.ts still names skillforge.example.
 
-/** The site's origin. Canonical, og:url, sitemap and robots URLs use it on every host. */
+/** The site's origin: the root domain. Canonical, og:url, sitemap and robots URLs use it on every host,
+ * so www and pages.dev copies never become canonical. */
 export const SITE_URL = 'https://skillforge.example';
 
 /** The console's sign-in page (the SvelteKit console, a different host). Shown only with CONSOLE_LIVE=1. */
