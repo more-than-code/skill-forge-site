@@ -3,8 +3,9 @@ import assert from 'node:assert/strict';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { test } from 'node:test';
+import { fileURLToPath } from 'node:url';
 
-const build = new URL('../build/', import.meta.url).pathname;
+const build = fileURLToPath(new URL('../build/', import.meta.url));
 const snapshot = JSON.parse(readFileSync(new URL('../src/lib/catalog.json', import.meta.url), 'utf8'));
 
 /** @param {string} dir @returns {string[]} */
@@ -26,9 +27,16 @@ const ALLOWED_URL = [
 	/^http:\/\/www\.sitemaps\.org\/schemas\/sitemap\/0\.9$/
 ];
 
-test('no JavaScript ships', () => {
-	assert.deepEqual(files.filter((f) => f.endsWith('.js')), []);
+test('no JavaScript or SvelteKit client data ships', () => {
+	assert.deepEqual(files.filter((f) => f.endsWith('.js') || f.endsWith('__data.json') || f.endsWith('version.json')), []);
 	for (const f of text) assert.doesNotMatch(read(f), /<script/i, f);
+});
+
+test('no inline styles, so the CSP in _headers (style-src self) holds', () => {
+	for (const f of text.filter((f) => f.endsWith('.html'))) {
+		assert.doesNotMatch(read(f), /<style|\sstyle=/i, f);
+	}
+	assert.match(read('_headers'), /Content-Security-Policy: default-src 'none'/);
 });
 
 test('every absolute URL is on an allowed host', () => {
@@ -51,6 +59,13 @@ test('every skill and tag has a page, and the sitemap lists them', () => {
 		assert.ok(files.includes(`tags/${t}.html`), t);
 		assert.ok(sitemap.includes(`/tags/${t}</loc>`), `sitemap: ${t}`);
 	}
+	// And the other way: every sitemap URL is a built page.
+	for (const [, path] of sitemap.matchAll(/<loc>https:\/\/[^/<]+(\/[^<]*)?<\/loc>/g)) {
+		const file = path ? `${path.slice(1)}.html` : 'index.html';
+		assert.ok(files.includes(file), `sitemap URL without a page: ${path ?? '/'}`);
+	}
+	const llms = read('llms.txt');
+	for (const s of snapshot.skills) assert.ok(llms.includes(`[${s.name}](`), `llms.txt: ${s.name}`);
 });
 
 test('Pages files: 404 page, headers, robots, llms.txt and no redirects', () => {
@@ -68,6 +83,12 @@ test('no page has a robots meta (noindex comes from _headers on preview hosts on
 
 test('Sign in appears only when the portal is live', () => {
 	const home = read('index.html');
-	if (process.env.PORTAL_LIVE === '1') assert.match(home, /\/signin"/);
-	else for (const f of text) assert.doesNotMatch(read(f), /\/signin/, f);
+	if (process.env.PORTAL_LIVE === '1') {
+		const signIn = [...home.matchAll(/href="(https:\/\/portal\.[^"]+\/signin)"/g)];
+		assert.ok(signIn.length >= 3, 'header Sign in, Get started and the registries section link to the portal');
+		assert.match(home, /id="portal"/);
+		assert.match(read('skills.html'), /href="https:\/\/portal\.[^"]+\/signin"/, 'header on other pages');
+	} else {
+		for (const f of text) assert.doesNotMatch(read(f), /\/signin|id="portal"/, f);
+	}
 });

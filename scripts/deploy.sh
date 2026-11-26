@@ -66,6 +66,18 @@ if [ "$BRANCH" = main ]; then
 	fi
 fi
 
+# 2b. Production never ships the placeholder domains (src/lib/links.ts) or a site without its portal flag
+# decided: PORTAL_LIVE comes from the environment, so say it explicitly for production.
+if [ "$BRANCH" = main ]; then
+	if grep -qF 'skillforge.example' src/lib/links.ts; then
+		fail "src/lib/links.ts still names the placeholder domain skillforge.example; set the real domains first"
+	fi
+	case "${PORTAL_LIVE-}" in
+		0 | 1) ;;
+		*) fail "set PORTAL_LIVE=0 or PORTAL_LIVE=1 explicitly for a production deploy" ;;
+	esac
+fi
+
 # 3. Credentials, before the slow gates. A dry run reads none.
 if [ "$DRY_RUN" = 0 ]; then
 	[ -f "$TOKEN_FILE" ] || fail "missing $TOKEN_FILE (a Cloudflare Pages edit token; see site/README.md)"
@@ -87,18 +99,6 @@ pnpm check
 pnpm test
 pnpm build
 pnpm guard
-
-# Production never ships the placeholder domains (src/lib/links.ts) or a site without its portal flag
-# decided: PORTAL_LIVE comes from the environment, so say it explicitly for production.
-if [ "$BRANCH" = main ]; then
-	if grep -rqF 'skillforge.example' build; then
-		fail "build/ still names the placeholder domain skillforge.example; set the real domains in src/lib/links.ts"
-	fi
-	case "${PORTAL_LIVE-}" in
-		0 | 1) ;;
-		*) fail "set PORTAL_LIVE=0 or PORTAL_LIVE=1 explicitly for a production deploy" ;;
-	esac
-fi
 
 # 5. Clean tree again: the gates must not have changed a tracked file, and HEAD must not have moved.
 check_clean

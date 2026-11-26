@@ -12,4 +12,5 @@ export const SIGN_IN_URL = 'https://portal.skillforge.example/signin';
 export const REPO_URL = 'https://github.com/more-than-code/skill-forge';
 
 /** A file or folder in the public registry at the snapshot's commit, so links match what the page shows. */
-export const sourceUrl = (commit: string, path: string) => `${REPO_URL}/tree/${commit}/${path}`;
+export const sourceUrl = (commit: string, path: string) =>
+	`${REPO_URL}/tree/${commit}/${path.split('/').map(encodeURIComponent).join('/')}`;
