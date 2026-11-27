@@ -1,4 +1,2 @@
 allowBuilds:
   esbuild: true
-  # wrangler pages deploy only uploads files; it never runs the local workerd runtime.
-  workerd: false

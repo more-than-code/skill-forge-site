@@ -1,0 +1,48 @@
+# Site gates (README.md): check, test, build, guard. This workflow never deploys; Cloudflare Pages
+# builds and deploys from its own Git integration (README.md, Deploy).
+name: ci
+
+on:
+  push:
+    branches: [dev, main]
+  pull_request:
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gates:
+    # The default runner is a shared self-hosted one: never run code from a fork's PR on it.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ${{ fromJSON(vars.CI_RUNS_ON || '["self-hosted","linux","x64","shared-ci"]') }}
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+        with:
+          version: 10.28.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: install
+        run: pnpm install --frozen-lockfile
+      - name: check
+        run: pnpm check
+      - name: test
+        run: pnpm test
+      - name: build (console flag off)
+        run: pnpm build
+      - name: guard
+        run: pnpm guard
+      - name: build and guard (console flag on)
+        env:
+          CONSOLE_LIVE: '1'
+        run: pnpm build && pnpm guard
