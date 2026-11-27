@@ -1,5 +1,7 @@
-# Site gates (README.md): check, test, build, guard. This workflow never deploys; Cloudflare Pages
-# builds and deploys from its own Git integration (README.md, Deploy).
+# Site gates (README.md). Two tiers:
+#   light: every pull request into dev or main (required to merge into dev).
+#   full:  every push to dev or main (required on a commit before main fast-forwards to it).
+# This workflow never deploys; Cloudflare Pages builds and deploys from its own Git integration.
 name: ci
 
 on:
@@ -16,7 +18,36 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  gates:
+  light:
+    if: github.event_name == 'pull_request'
+    # A public repo: GitHub-hosted runners only, never the shared self-hosted one.
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+        with:
+          version: 10.28.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: install
+        run: pnpm install --frozen-lockfile
+      - name: check
+        run: pnpm check
+      - name: test
+        run: pnpm test
+      - name: build (console flag off)
+        run: pnpm build
+      - name: guard
+        run: pnpm guard
+
+  full:
+    if: github.event_name != 'pull_request'
     # A public repo: GitHub-hosted runners only, never the shared self-hosted one.
     runs-on: ubuntu-latest
     permissions:

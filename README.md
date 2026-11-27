@@ -66,7 +66,7 @@ robots meta; no inline styles (the CSP in `_headers` allows only `style-src 'sel
 
 Cloudflare Pages builds this public repo through its Git integration: a push to `main` deploys
 production, a push to `dev` deploys a preview. Nobody holds a deploy token. CI
-(`.github/workflows/ci.yml`, GitHub-hosted runners) runs the same gates on pushes to and pull requests into `dev` and `main`, and never deploys;
+(`.github/workflows/ci.yml`, GitHub-hosted runners) runs the `light` gates on pull requests and the `full` gates on pushes to `dev` and `main`, and never deploys;
 Pages runs the build and the guard too, so a build that fails the guard is never published.
 
 Pages project settings (set by the maintainer in the Cloudflare dashboard):
@@ -83,6 +83,15 @@ Pages project settings (set by the maintainer in the Cloudflare dashboard):
 
 The variables are flags and tool versions only: never put a secret in them, since every build of this public repo can read them. `.node-version` also pins Node 22. Set `CONSOLE_LIVE=1` in the production variables, then
 redeploy, only once the console accepts sign-ins.
+
+## Release path
+
+| Branch | How it moves | Required (GitHub ruleset) |
+|---|---|---|
+| `dev` | pull requests only | the `light` check: install, check, test, build and guard |
+| `main` | fast-forward from `dev`, no merge commits | the `full` check on that commit, from its push to `dev`: `light` plus build and guard with `CONSOLE_LIVE=1` |
+
+Both branches block force pushes and deletion. A push to `main` deploys production.
 
 ## Domains
 
