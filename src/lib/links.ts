@@ -1,14 +1,13 @@
 // Addresses for the public site, a static site on Cloudflare Pages, separate from the console.
 // The site lives at the root domain (www redirects to it) and the console at console.<domain>
-// (Joe, 2026-11-26). The domain is a placeholder until Joe picks it: scripts/deploy.sh refuses a
-// production deploy while src/lib/links.ts still names skillforge.example.
+// (Joe, 2026-11-26). The domain is skillforgecloud.com (registered at Cloudflare, 2026-11-27).
 
 /** The site's origin: the root domain. Canonical, og:url, sitemap and robots URLs use it on every host,
  * so www and pages.dev copies never become canonical. */
-export const SITE_URL = 'https://skillforge.example';
+export const SITE_URL = 'https://skillforgecloud.com';
 
 /** The console's sign-in page (the SvelteKit console, a different host). Shown only with CONSOLE_LIVE=1. */
-export const SIGN_IN_URL = 'https://console.skillforge.example/signin';
+export const SIGN_IN_URL = 'https://console.skillforgecloud.com/signin';
 
 /** The open-source registry and skf CLI: the public catalog's source. */
 export const REPO_URL = 'https://github.com/more-than-code/skill-forge';

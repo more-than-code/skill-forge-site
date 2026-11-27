@@ -16,8 +16,8 @@ release, the same way the Deploybot and Defect Drainer sites are built and hoste
   with status 404 for every unknown path.
 - Colours: tokens in `src/app.css` from the brand mark (`static/favicon.svg`, copied from
   skill-forge `docs/brand/logo/mark.svg`). Dark mode follows the system; there is no theme switch.
-- Addresses are in `src/lib/links.ts`. The domains are placeholders (`skillforge.example`) until
-  they are chosen; `deploy.sh` refuses a production deploy while the build names them.
+- Addresses are in `src/lib/links.ts`: the site at `https://skillforgecloud.com`, sign-in at
+  `https://console.skillforgecloud.com/signin`.
 
 ## The catalog snapshot
 
@@ -80,23 +80,23 @@ DRY_RUN=1 sh scripts/deploy.sh                     # every gate, no upload, read
 ```
 
 `deploy.sh` refuses a dirty tree; for production it also refuses a commit that is not on
-`origin/dev`, placeholder domains still in `src/lib/links.ts`, and an unset `CONSOLE_LIVE`, before any gate. It runs
+`origin/dev` and an unset `CONSOLE_LIVE`, before any gate. It runs
 install, check, test, build and guard, checks the tree and HEAD did not change, then runs
 `wrangler pages deploy build --project-name skill-forge-site --branch <branch> --commit-hash <HEAD>`.
 The project's production branch is `main`; any other branch is a preview.
 
-## Domains (after the domain is chosen)
+## Domains
 
-The site is the root domain; the console is `console.<domain>` (Joe, 2026-11-26).
+The site is the root domain, `skillforgecloud.com`; the console is `console.skillforgecloud.com`
+(Joe, 2026-11-26; domain registered at Cloudflare 2026-11-27).
 
-1. Set `SITE_URL` (`https://<domain>`) and `SIGN_IN_URL` (`https://console.<domain>/signin`) in
-   `src/lib/links.ts`, and the allowed hosts in `tests/guard.build.mjs`.
-2. In the Pages project, add `<domain>` and `www.<domain>` as custom domains.
-3. Redirect `www.<domain>` to `https://<domain>` (301, path and query kept) with a Cloudflare
+1. `src/lib/links.ts` holds `SITE_URL` and `SIGN_IN_URL`; `tests/guard.build.mjs` allows only these hosts.
+2. The Pages project has `skillforgecloud.com` and `www.skillforgecloud.com` as custom domains.
+3. `www.skillforgecloud.com` redirects to `https://skillforgecloud.com` (301, path and query kept) with a Cloudflare
    redirect rule on the zone. Pages' `_redirects` matches paths only, not hosts, and the build has
    no `_redirects`. Canonical URLs already name the root domain, so `www` is never indexed as a
    separate site.
-4. `console.<domain>` points at the console's host (Deploybot), not at Pages.
+4. `console.skillforgecloud.com` (later) points at the console's host (Deploybot), not at Pages.
 
 `_headers` adds `nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: no-referrer`, a strict Content-Security-Policy and a Permissions-Policy everywhere,
 and `X-Robots-Tag: noindex` on `pages.dev` hosts and a direct `/404`, so previews are never indexed.
