@@ -17,11 +17,11 @@ const files = walk(build).map((f) => relative(build, f));
 const text = files.filter((f) => /\.(html|css|txt|xml|svg)$/.test(f) || f === '_headers');
 const read = (f) => readFileSync(join(build, f), 'utf8');
 
-// The site's own hosts (placeholders until the domains are chosen), the public registry on GitHub,
+// The site's own hosts, the public registry on GitHub,
 // and XML namespaces.
 const ALLOWED_URL = [
-	/^https:\/\/skillforge\.example(\/|$)/,
-	/^https:\/\/console\.skillforge\.example\//,
+	/^https:\/\/skillforgecloud\.com(\/|$)/,
+	/^https:\/\/console\.skillforgecloud\.com\//,
 	/^https:\/\/github\.com\/more-than-code\/skill-forge(\/|$)/,
 	/^http:\/\/www\.w3\.org\/2000\/svg$/,
 	/^http:\/\/www\.sitemaps\.org\/schemas\/sitemap\/0\.9$/
