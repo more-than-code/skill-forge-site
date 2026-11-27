@@ -3,8 +3,9 @@
 The public landing site, at the root domain (`<domain>`, with `www.<domain>` redirecting to it): the home page, the public skill catalog (`/skills`, one page per skill
 and per tag), a 404 page, `robots.txt`, `sitemap.xml` and `llms.txt`. Visitors browse without
 signing in; using the platform means signing in to the console, a separate app at `console.<domain>`.
-The site is static, on Cloudflare Pages (project `skill-forge-site`), with its own build and
-release, the same way the Deploybot and Defect Drainer sites are built and hosted.
+The site is static, on Cloudflare Pages (project `skill-forge-site`), built from this public repo,
+which releases at its own pace, apart from the private platform repo (API and console).
+Pull requests go into `dev`.
 
 ## How it is built
 
@@ -47,7 +48,6 @@ claim is absent from the output while its flag is off, so the site says only wha
 ## Commands
 
 ```bash
-cd site
 pnpm install --frozen-lockfile
 pnpm check   # svelte-check, warnings fail
 pnpm test    # catalog parser and validation, and the committed snapshot
@@ -62,28 +62,28 @@ pnpm guard   # tests/guard.build.mjs over build/
 with absolute asset URLs; `_headers`, `robots.txt` and `llms.txt` present and no `_redirects`; no
 robots meta; no inline styles (the CSP in `_headers` allows only `style-src 'self'`); every sitemap URL is a built page and `llms.txt` lists every skill; Sign in and the registries section only with `CONSOLE_LIVE=1`, pointing at the console. CI runs build and guard with the flag off and on.
 
-## Deploy (on Joe's yes)
+## Deploy
 
-Direct upload with the pinned Wrangler in `package.json`. No Git integration: Pages never gets
-access to this private repo, and nothing deploys by itself. CI (`.github/workflows/site.yml`) runs
-the gates and never deploys.
+Cloudflare Pages builds this public repo through its Git integration: a push to `main` deploys
+production, a push to `dev` deploys a preview. Nobody holds a deploy token. CI
+(`.github/workflows/ci.yml`) runs the same gates on every push and pull request and never deploys;
+Pages runs only `pnpm build`, so merge into `dev` and `main` only with CI green.
 
-| What | Where |
+Pages project settings (Joe sets these in the Cloudflare dashboard):
+
+| Setting | Value |
 |---|---|
-| API token (secret, Cloudflare Pages edit only) | `~/.config/skill-forge/cloudflare-pages-token`, mode 600, read only by `deploy.sh`, never printed |
-| Account id (not secret) | `CLOUDFLARE_ACCOUNT_ID`, or `~/.config/skill-forge/cloudflare-account-id` |
+| Project | `skill-forge-site`, connected to `more-than-code/skill-forge-site` |
+| Production branch | `main` |
+| Preview branches | custom: include `dev` only (pull requests and other branches are not built) |
+| Build command | `pnpm build` (Pages installs from `pnpm-lock.yaml` first) |
+| Build output directory | `build` |
+| Root directory | `/` |
+| Environment variables (production and preview) | `CONSOLE_LIVE=0`, `PNPM_VERSION=10.28.0`, `NODE_VERSION=22` |
 
-```bash
-sh scripts/deploy.sh                               # preview: https://preview.skill-forge-site.pages.dev
-BRANCH=main CONSOLE_LIVE=0 sh scripts/deploy.sh     # production, after Joe's yes
-DRY_RUN=1 sh scripts/deploy.sh                     # every gate, no upload, reads no credentials
-```
-
-`deploy.sh` refuses a dirty tree; for production it also refuses a commit that is not on
-`origin/dev` and an unset `CONSOLE_LIVE`, before any gate. It runs
-install, check, test, build and guard, checks the tree and HEAD did not change, then runs
-`wrangler pages deploy build --project-name skill-forge-site --branch <branch> --commit-hash <HEAD>`.
-The project's production branch is `main`; any other branch is a preview.
+`.node-version` also pins Node 22. Set `CONSOLE_LIVE=1` in the production variables, then
+redeploy, only once the console accepts sign-ins. A direct-upload Pages project cannot be switched
+to Git, so the Git-connected project replaced the earlier direct-upload one.
 
 ## Domains
 
