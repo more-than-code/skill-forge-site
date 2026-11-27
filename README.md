@@ -1,8 +1,8 @@
 # Skill Forge site
 
-The public landing site, at the root domain (`<domain>`, with `www.<domain>` redirecting to it): the home page, the public skill catalog (`/skills`, one page per skill
+The public landing site, at the root domain (`skillforgecloud.com`, with `www.skillforgecloud.com` redirecting to it): the home page, the public skill catalog (`/skills`, one page per skill
 and per tag), a 404 page, `robots.txt`, `sitemap.xml` and `llms.txt`. Visitors browse without
-signing in; using the platform means signing in to the console, a separate app at `console.<domain>`.
+signing in; using the platform means signing in to the console, a separate app at `console.skillforgecloud.com`.
 The site is static, on Cloudflare Pages (project `skill-forge-site`), built from this public repo,
 which releases at its own pace, apart from the private platform repo (API and console).
 Pull requests go into `dev`.
@@ -66,29 +66,27 @@ robots meta; no inline styles (the CSP in `_headers` allows only `style-src 'sel
 
 Cloudflare Pages builds this public repo through its Git integration: a push to `main` deploys
 production, a push to `dev` deploys a preview. Nobody holds a deploy token. CI
-(`.github/workflows/ci.yml`) runs the same gates on every push and pull request and never deploys;
-Pages runs only `pnpm build`, so merge into `dev` and `main` only with CI green.
+(`.github/workflows/ci.yml`, GitHub-hosted runners) runs the same gates on pushes to and pull requests into `dev` and `main`, and never deploys;
+Pages runs the build and the guard too, so a build that fails the guard is never published.
 
-Pages project settings (Joe sets these in the Cloudflare dashboard):
+Pages project settings (set by the maintainer in the Cloudflare dashboard):
 
 | Setting | Value |
 |---|---|
 | Project | `skill-forge-site`, connected to `more-than-code/skill-forge-site` |
 | Production branch | `main` |
 | Preview branches | custom: include `dev` only (pull requests and other branches are not built) |
-| Build command | `pnpm build` (Pages installs from `pnpm-lock.yaml` first) |
+| Build command | `pnpm build && pnpm guard` (Pages runs `pnpm install` first, detected from `pnpm-lock.yaml`) |
 | Build output directory | `build` |
 | Root directory | `/` |
 | Environment variables (production and preview) | `CONSOLE_LIVE=0`, `PNPM_VERSION=10.28.0`, `NODE_VERSION=22` |
 
-`.node-version` also pins Node 22. Set `CONSOLE_LIVE=1` in the production variables, then
-redeploy, only once the console accepts sign-ins. A direct-upload Pages project cannot be switched
-to Git, so the Git-connected project replaced the earlier direct-upload one.
+The variables are flags and tool versions only: never put a secret in them, since every build of this public repo can read them. `.node-version` also pins Node 22. Set `CONSOLE_LIVE=1` in the production variables, then
+redeploy, only once the console accepts sign-ins.
 
 ## Domains
 
-The site is the root domain, `skillforgecloud.com`; the console is `console.skillforgecloud.com`
-(Joe, 2026-11-26; domain registered at Cloudflare 2026-11-27).
+The site is the root domain, `skillforgecloud.com`; the console is `console.skillforgecloud.com`.
 
 1. `src/lib/links.ts` holds `SITE_URL` and `SIGN_IN_URL`; `tests/guard.build.mjs` allows only these hosts.
 2. The Pages project has `skillforgecloud.com` and `www.skillforgecloud.com` as custom domains.

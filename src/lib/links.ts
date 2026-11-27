@@ -1,6 +1,6 @@
 // Addresses for the public site, a static site on Cloudflare Pages, separate from the console.
-// The site lives at the root domain (www redirects to it) and the console at console.<domain>
-// (Joe, 2026-11-26). The domain is skillforgecloud.com (registered at Cloudflare, 2026-11-27).
+// The site lives at the root domain, skillforgecloud.com (www redirects to it), and the console at
+// console.skillforgecloud.com.
 
 /** The site's origin: the root domain. Canonical, og:url, sitemap and robots URLs use it on every host,
  * so www and pages.dev copies never become canonical. */
