@@ -23,21 +23,23 @@
 		{ value: catalog.counts.subagentSets, label: 'subagent sets' },
 		{ value: catalog.counts.instructionVariants, label: 'instruction variants' }
 	];
+	const baseline = findSkill('security-baseline');
 	const installCommand = `npm install -g git+${REPO_URL}.git`;
 </script>
 
 <Head
 	title="Skill Forge: versioned skills for coding agents"
-	description="Every agent session starts from the same reviewed rules. Skill Forge versions and locks the skills, instructions and subagents your coding agents load."
+	description="Every agent session starts from the same versioned rules. Skill Forge versions and locks the skills, instructions and subagents your coding agents load."
 	path="/"
 />
 
 <section class="hero">
 	<div class="hero-text">
-		<h1>Every agent session starts from the same reviewed rules.</h1>
+		<h1>Every agent session starts from the same versioned rules.</h1>
 		<p class="lead">
-			Skill Forge versions the skills, instructions and subagents your coding agents load. A change is
-			reviewed once, then reaches every repository and every cloud session as an exact, hash-locked copy.
+			Skill Forge versions the skills, instructions and subagents your coding agents load. When your
+			registry requires pull requests, a change is reviewed once, then reaches each repository and cloud
+			session on its next sync as an exact, hash-locked copy.
 		</p>
 		<div class="actions">
 			{#if data.consoleLive}
@@ -48,27 +50,30 @@
 			<a class="scroll-link" href="#action">See it in action ↓</a>
 		</div>
 	</div>
-	<FanoutDiagram />
+	<FanoutDiagram skill="security-baseline" version={baseline?.version ?? ''} />
 </section>
 
 <section aria-labelledby="value">
 	<header class="section-head">
-		<p class="eyebrow">Why teams use it</p>
+		<p class="eyebrow">Why use it</p>
 		<h2 id="value">Agent rules you can trust, like the rest of your code</h2>
 	</header>
 	<ul class="points" role="list">
 		<li class="panel">
 			<ReviewDiagram />
+			<p class="illustrative">Illustrative</p>
 			<h3>Review a change once</h3>
-			<p>Skills live in a git registry. A change goes through a pull request and ships as a new version, not as an unreviewed edit in some repo.</p>
+			<p>Skills live in a git registry. When the registry requires pull requests, a change is reviewed there once and ships as a new version, not as an unreviewed edit in some repo.</p>
 		</li>
 		<li class="panel">
 			<LockDiagram />
+			<p class="illustrative">Illustrative</p>
 			<h3>Know exactly what your agent read</h3>
 			<p>Each repo keeps a lockfile of SHA-256 hashes. <code>skf sync --check</code> fails when a copy is edited or falls behind.</p>
 		</li>
 		<li class="panel">
 			<AgentsDiagram />
+			<p class="illustrative">Illustrative</p>
 			<h3>One source for every agent tool</h3>
 			<p>Instructions and subagents are written for Claude Code, Codex, Copilot CLI and Grok from one inventory; Claude cloud sessions install the same skills at start-up.</p>
 		</li>
@@ -78,7 +83,7 @@
 <section aria-labelledby="action">
 	<header class="section-head">
 		<p class="eyebrow">See it in action</p>
-		<h2 id="action">From a reviewed skill to a checked repo in four steps</h2>
+		<h2 id="action">From a published skill to a checked repo in four steps</h2>
 	</header>
 	<ol class="walk" role="list">
 		<li>
@@ -89,7 +94,8 @@
 			</div>
 			<div class="mock">
 				<p class="mock-bar"><span>acme-app/skill-forge.json</span><span>Illustrative interface</span></p>
-				<pre><code>{`{
+				<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+				<pre tabindex="0" aria-label="Code example"><code>{`{
   "schemaVersion": 2,
   "skills": {
     "dependencies": {
@@ -107,7 +113,8 @@ ${example}
 			</div>
 			<div class="mock">
 				<p class="mock-bar"><span>acme-app</span><span>Illustrative interface</span></p>
-				<pre><code>{`$ skf sync
+				<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+				<pre tabindex="0" aria-label="Code example"><code>{`$ skf sync
 ${syncOutput}
 Wrote skill-forge.lock.json (${pinned.length} registry, 0 local skill(s)).`}</code></pre>
 			</div>
@@ -120,9 +127,10 @@ Wrote skill-forge.lock.json (${pinned.length} registry, 0 local skill(s)).`}</co
 			</div>
 			<div class="mock">
 				<p class="mock-bar"><span>acme-app/skill-forge.lock.json</span><span>Illustrative interface</span></p>
-				<pre><code>{`"security-baseline": {
-  "version": "0.1.0",
-  "integrity": "sha256-6BrEv3S5yb6Pak…",
+				<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+				<pre tabindex="0" aria-label="Code example"><code>{`"security-baseline": {
+  "version": "${baseline?.version}",
+  "integrity": "sha256-…",
   "source": "registry"
 }`}</code></pre>
 			</div>
@@ -135,9 +143,10 @@ Wrote skill-forge.lock.json (${pinned.length} registry, 0 local skill(s)).`}</co
 			</div>
 			<div class="mock">
 				<p class="mock-bar"><span>acme-app · CI</span><span>Illustrative interface</span></p>
-				<pre><code>{`$ skf sync --check
+				<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+				<pre tabindex="0" aria-label="Code example"><code>{`$ skf sync --check
 ! .agents/skills/security-baseline differs from the resolved skill; run "skf sync".
-`}<span class="exit">exit 1</span></code></pre>
+`}<span class="exit"><span class="exit-mark" aria-hidden="true">●</span> exit 1</span></code></pre>
 			</div>
 		</li>
 	</ol>
@@ -146,12 +155,12 @@ Wrote skill-forge.lock.json (${pinned.length} registry, 0 local skill(s)).`}</co
 <section aria-labelledby="uses">
 	<header class="section-head">
 		<p class="eyebrow">Use cases</p>
-		<h2 id="uses">What teams do with it today</h2>
+		<h2 id="uses">What you can do with it</h2>
 	</header>
 	<ul class="cases" role="list">
 		<li class="panel">
 			<h3>One security baseline everywhere</h3>
-			<p>Pin <code>security-baseline</code> in every repo; a reviewed update reaches all of them on the next sync.</p>
+			<p>Pin <code>security-baseline</code> in every repo; an update reaches each of them on its next sync.</p>
 		</li>
 		<li class="panel">
 			<h3>Cloud sessions that match your laptop</h3>
@@ -192,7 +201,7 @@ Wrote skill-forge.lock.json (${pinned.length} registry, 0 local skill(s)).`}</co
 		</thead>
 		<tbody>
 			<tr>
-				<th scope="row">Does every repo get the same reviewed version?</th>
+				<th scope="row">Does every repo get the same version?</th>
 				<td data-label="Skill Forge">Yes: a version range in the manifest, an exact hash in the lock.</td>
 				<td data-label="Copying by hand">Only if someone copies it everywhere.</td>
 			</tr>
@@ -203,7 +212,7 @@ Wrote skill-forge.lock.json (${pinned.length} registry, 0 local skill(s)).`}</co
 			</tr>
 			<tr>
 				<th scope="row">Is a change reviewed before agents load it?</th>
-				<td data-label="Skill Forge">Yes: a pull request on the registry.</td>
+				<td data-label="Skill Forge">Yes, if the registry requires pull requests.</td>
 				<td data-label="Copying by hand">Depends on each repo.</td>
 			</tr>
 		</tbody>
@@ -254,7 +263,8 @@ Wrote skill-forge.lock.json (${pinned.length} registry, 0 local skill(s)).`}</co
 <section class="band panel" aria-labelledby="install">
 	<h2 id="install">Install skf and pin your first skill</h2>
 	<ol class="install-steps">
-		<li>Install the CLI (Node 18 or later):<pre><code>{installCommand}</code></pre></li>
+		<li>Install the CLI (Node 18 or later):<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+				<pre tabindex="0" aria-label="Code example"><code>{installCommand}</code></pre></li>
 		<li>Add a skill to <code>skill-forge.json</code> as in step 1 above, then run <code>skf sync</code>.</li>
 	</ol>
 	<p class="band-actions">
@@ -382,8 +392,17 @@ Wrote skill-forge.lock.json (${pinned.length} registry, 0 local skill(s)).`}</co
 	}
 
 	.exit {
-		color: var(--critical);
 		font-weight: var(--fw-bold);
+	}
+
+	.exit-mark {
+		color: var(--critical);
+	}
+
+	.illustrative {
+		margin: var(--space-2) 0 0;
+		color: var(--ink-2);
+		font-size: var(--fs-xs);
 	}
 
 	.stats {
