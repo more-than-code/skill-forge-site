@@ -1,8 +1,8 @@
 {
 	"source": {
 		"repo": "more-than-code/skill-forge",
-		"commit": "f4cdf9841532a99e13877ddfdc6653bcf30274b4",
-		"committedAt": "2026-11-28T10:13:40+00:00"
+		"commit": "07f412da3f0e8f5b258f0e56ff74b7cd0b218b9b",
+		"committedAt": "2026-11-28T10:36:37+00:00"
 	},
 	"registryVersion": "1.4.0",
 	"skills": [
@@ -549,7 +549,7 @@
 				],
 				"inAction": [
 					{
-						"caption": "Three items of the skill's checklist that the live home page did not meet when the skill was run on it.",
+						"caption": "Three items of the skill's checklist that the live home page did not meet when the skill was run on it (abridged).",
 						"source": "landing-page checklist on the skillforgecloud.com home page, skill-forge-site main at efa4216, 2026-11-28",
 						"kind": "excerpt",
 						"excerpt": "Not met: Value first; section order as in doctrine 4; each point has a visual\nNot met: Claims ledger complete\nNot met: Comparison rows are buyer questions, sourced and dated"
@@ -759,7 +759,7 @@
 				"inAction": [
 					{
 						"caption": "Left before, right after: the skill catalog went from 42 separate cards to one panel with ruled rows and hairline edges. The skill is written for app screens; on this public listing page only its panel, row and spacing rules were applied, and tags stay filled chips.",
-						"source": "skill-forge-site, before: main at efa4216 (the live site); after: tokens commit 3fb0918, 2026-11-28",
+						"source": "skill-forge-site, before: main at efa4216 (the live site); after: the tokens change, merged into dev as c246dfe, 2026-11-28",
 						"kind": "image",
 						"file": "catalog-before-after.png",
 						"alt": "Skill Forge catalog page: separate boxed cards on the left, one ruled list on the right"
@@ -976,13 +976,13 @@
 			"showcase": {
 				"value": "Every colour, type size, spacing step, radius and motion value lives in one token file, in light and dark, and its checker fails (exit 1) when a declared colour pair drops below WCAG AA in either theme.",
 				"howItWorks": {
-					"title": "One token file drives the page, and CI checks every colour pair",
+					"title": "One token file drives the page, and a checker tests every colour pair",
 					"stages": [
 						{
-							"name": "Brand colours",
+							"name": "Your colours",
 							"lines": [
-								"#F97316 and #1E293B",
-								"via brand-palette-roles"
+								"swap the preset's values",
+								"or brand-palette-roles"
 							],
 							"accent": false
 						},
@@ -1024,21 +1024,21 @@
 				"inAction": [
 					{
 						"caption": "Dark mode, left before and right after the tokens. Before, the logo's slate tile matched the header and disappeared; after, it keeps a hairline edge on a neutral dark canvas.",
-						"source": "skill-forge-site, before: main at efa4216 (the live site); after: tokens commit 3fb0918, 2026-11-28",
+						"source": "skill-forge-site, before: main at efa4216 (the live site); after: the tokens change, merged into dev as c246dfe, 2026-11-28",
 						"kind": "image",
 						"file": "home-dark-before-after.png",
 						"alt": "Skill Forge home page in dark mode: on the left the logo tile blends into the header, on the right it has a visible edge"
 					},
 					{
 						"caption": "Light mode, left before and right after: a warm paper canvas, the brand orange as the primary button with dark text, and darker orange links.",
-						"source": "skill-forge-site, before: main at efa4216 (the live site); after: tokens commit 3fb0918, 2026-11-28",
+						"source": "skill-forge-site, before: main at efa4216 (the live site); after: the tokens change, merged into dev as c246dfe, 2026-11-28",
 						"kind": "image",
 						"file": "home-light-before-after.png",
 						"alt": "Skill Forge home page in light mode: cool white canvas on the left, warm paper canvas with an orange primary button on the right"
 					},
 					{
 						"caption": "The checker's summary line for the Site's tokens, as printed (the four advisories are listed above it and do not fail the check).",
-						"source": "tokens.mjs check on skill-forge-site at 3fb0918, 2026-11-28",
+						"source": "tokens.mjs check on skill-forge-site dev at c246dfe, 2026-11-28",
 						"kind": "excerpt",
 						"excerpt": "132 pairs checked (light and dark): 0 WCAG failures, 4 APCA advisories"
 					}
