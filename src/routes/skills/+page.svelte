@@ -26,7 +26,7 @@
 	.tags {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 8px;
-		margin-bottom: 24px;
+		gap: var(--space-2);
+		margin-bottom: var(--space-5);
 	}
 </style>

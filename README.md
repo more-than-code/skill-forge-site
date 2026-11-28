@@ -15,8 +15,14 @@ Pull requests go into `dev`.
   `__data.json` and `version.json` files SvelteKit still emits.
 - `kit.paths.relative = false`, so `404.html` loads its CSS at any depth. Pages serves `404.html`
   with status 404 for every unknown path.
-- Colours: tokens in `src/app.css` from the brand mark (`static/favicon.svg`, copied from
-  skill-forge `docs/brand/logo/mark.svg`). Dark mode follows the system; there is no theme switch.
+- Design tokens: `src/lib/tokens/tokens.json` is the source of truth (the `ui-design-tokens` skill's
+  structure and role names). Colour values are derived with the `brand-palette-roles` skill from the
+  brand mark (`static/favicon.svg`, copied from skill-forge `docs/brand/logo/mark.svg`; primary
+  `#F97316`, secondary `#1E293B`). `src/lib/tokens/tokens.css` is generated; never edit it by hand.
+  After changing `tokens.json`, from `src/lib/tokens/`: `node scripts/tokens.mjs css > tokens.css`, then
+  `node scripts/tokens.mjs check` (0 WCAG failures required; APCA lines are advisory). `src/app.css` and
+  the components use tokens only. Dark mode follows the system through `light-dark()`; there is no theme
+  switch (the site ships no JavaScript).
 - Addresses are in `src/lib/links.ts`: the site at `https://skillforgecloud.com`, sign-in at
   `https://console.skillforgecloud.com/signin`.
 

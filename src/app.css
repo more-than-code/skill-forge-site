@@ -1,30 +1,6 @@
-/* Brand colours from the Skill Forge mark (skill-forge docs/brand/logo/mark.svg). Colour literals live
-   only in these two token blocks. Dark mode follows the system: no script, no theme switch. */
-:root {
-	--bg: #f8fafc;
-	--surface: #ffffff;
-	--text: #0f172a;
-	--muted: #475569;
-	--border: #e2e8f0;
-	--accent: #c2410c;
-	--accent-strong: #9a3412;
-	--on-accent: #ffffff;
-	--chip: #f1f5f9;
-}
-
-@media (prefers-color-scheme: dark) {
-	:root {
-		--bg: #0f172a;
-		--surface: #1e293b;
-		--text: #f8fafc;
-		--muted: #cbd5e1;
-		--border: #334155;
-		--accent: #fb923c;
-		--accent-strong: #fdba74;
-		--on-accent: #0f172a;
-		--chip: #273449;
-	}
-}
+/* Site styles. Every value comes from src/lib/tokens/tokens.css (generated from tokens.json, the
+   ui-design-tokens structure with brand-palette-roles values). No colour, size or spacing literals here.
+   Dark mode follows the system: no script, no theme switch. */
 
 * {
 	box-sizing: border-box;
@@ -33,73 +9,121 @@
 body {
 	margin: 0;
 	background: var(--bg);
-	color: var(--text);
-	font: 16px/1.6 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+	color: var(--ink);
+	font-family: var(--font-sans);
+	font-size: var(--fs-md);
+	line-height: var(--lh-body);
+	font-weight: var(--fw-regular);
+}
+
+h1,
+h2,
+h3 {
+	font-weight: var(--fw-bold);
+	line-height: var(--lh-tight);
+}
+
+h1 {
+	font-size: var(--fs-3xl);
+}
+
+h2 {
+	font-size: var(--fs-2xl);
+}
+
+h3 {
+	font-size: var(--fs-lg);
 }
 
 a {
-	color: var(--accent);
+	color: var(--accent-ink);
+	text-underline-offset: 0.15em;
 }
 
 a:hover {
-	color: var(--accent-strong);
+	text-decoration-thickness: 2px;
 }
 
 a:focus-visible {
-	outline: 2px solid var(--accent);
-	outline-offset: 2px;
+	outline: var(--focus-width) solid var(--focus);
+	outline-offset: var(--focus-offset);
+	border-radius: var(--r-sm);
 }
 
 code {
-	font: 0.9em ui-monospace, SFMono-Regular, Menlo, monospace;
+	font-family: var(--font-mono);
+	font-size: 0.9em;
+}
+
+pre {
+	background: var(--surface-2);
+	border-radius: var(--r-md);
+	padding: var(--space-3) var(--space-4);
+	overflow-x: auto;
+	margin: 0;
+	line-height: var(--lh-snug);
 }
 
 .wrap {
 	max-width: 64rem;
 	margin: 0 auto;
-	padding: 0 16px;
+	padding: 0 var(--space-4);
+}
+
+/* A container: surface, hairline edge, no shadow (quiet-ui-style-guide section 3). The transparent
+   outline turns into a visible system outline in forced colours, where box-shadow is dropped. */
+.panel {
+	background: var(--surface);
+	box-shadow: var(--edge);
+	outline: 1px solid transparent;
+	border-radius: var(--r-lg);
 }
 
 .button {
 	display: inline-flex;
 	align-items: center;
-	min-height: 44px;
-	padding: 0 20px;
-	border-radius: 8px;
-	border: 1px solid var(--accent);
-	font-weight: 600;
+	min-height: 44px; /* off-scale: touch target for the main actions */
+	padding: 0 var(--space-5);
+	border-radius: var(--r-md);
+	border: 1px solid var(--line-strong);
+	color: var(--ink);
+	font-weight: var(--fw-bold);
 	text-decoration: none;
+	transition: background-color var(--t-fast) var(--ease-out);
+}
+
+.button:hover {
+	background: var(--surface-2);
 }
 
 .button.primary {
 	background: var(--accent);
-	color: var(--on-accent);
+	border-color: var(--accent);
+	color: var(--on-fill);
 }
 
 .button.primary:hover {
-	background: var(--accent-strong);
-	border-color: var(--accent-strong);
-	color: var(--on-accent);
+	text-decoration: underline;
 }
 
+/* Tags are small and quiet: radius sm, never a pill (quiet-ui-style-guide section 2). */
 .chip {
-	display: inline-block;
-	padding: 2px 10px;
-	border-radius: 999px;
-	background: var(--chip);
-	color: var(--muted);
-	font-size: 0.85rem;
+	display: inline-flex;
+	align-items: center;
+	min-height: 28px; /* off-scale: keeps a 24px target with clearance */
+	padding: 0 var(--space-2);
+	border-radius: var(--r-sm);
+	background: var(--surface-2);
+	color: var(--ink-2);
+	font-size: var(--fs-sm);
 	text-decoration: none;
 }
 
-a.chip {
-	min-height: 28px;
-}
-
 a.chip:hover {
-	color: var(--text);
+	background: var(--surface-3);
+	color: var(--ink);
 }
 
 .muted {
-	color: var(--muted);
+	color: var(--ink-2);
 }

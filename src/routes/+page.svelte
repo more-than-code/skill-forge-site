@@ -48,7 +48,7 @@
 	<h2 id="stats">The public catalog</h2>
 	<ul class="stats" role="list">
 		{#each stats as stat (stat.label)}
-			<li><strong>{stat.value}</strong><span>{stat.label}</span></li>
+			<li class="panel"><strong>{stat.value}</strong><span>{stat.label}</span></li>
 		{/each}
 	</ul>
 	<p class="muted">
@@ -110,60 +110,57 @@ ${example}
 
 <style>
 	section {
-		margin-bottom: 48px;
+		margin-bottom: var(--space-7);
 	}
 
+	/* Display size only in the hero (quiet-ui-style-guide section 1), smaller on phones. */
 	.hero h1 {
-		font-size: clamp(2rem, 5vw, 3rem);
-		line-height: 1.15;
-		margin: 16px 0;
+		font-size: clamp(var(--fs-3xl), 5vw, var(--fs-5xl));
+		margin: var(--space-4) 0;
 		max-width: 20ch;
 	}
 
 	.lead {
-		font-size: 1.15rem;
-		color: var(--muted);
+		font-size: var(--fs-lg);
+		color: var(--ink-2);
 		max-width: 60ch;
 	}
 
 	.actions {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 12px;
-		margin-top: 24px;
+		gap: var(--space-3);
+		margin-top: var(--space-5);
 	}
 
 	.stats {
 		list-style: none;
 		padding: 0;
-		margin: 0 0 12px;
+		margin: 0 0 var(--space-3);
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-		gap: 12px;
+		gap: var(--space-3);
 	}
 
 	.stats li {
-		background: var(--surface);
-		border: 1px solid var(--border);
-		border-radius: 10px;
-		padding: 16px;
+		padding: var(--space-4);
 		display: flex;
 		flex-direction: column;
 	}
 
 	.stats strong {
-		font-size: 2rem;
-		line-height: 1.1;
+		font-size: var(--fs-3xl);
+		line-height: var(--lh-tight);
 	}
 
 	.stats span {
-		color: var(--muted);
+		color: var(--ink-2);
 	}
 
 	.steps {
-		padding-left: 20px;
+		padding-left: var(--space-5);
 		display: grid;
-		gap: 16px;
+		gap: var(--space-4);
 	}
 
 	.steps li {
@@ -171,26 +168,16 @@ ${example}
 	}
 
 	.steps h3 {
-		margin: 0 0 4px;
-		font-size: 1.1rem;
+		margin: 0 0 var(--space-1);
 	}
 
 	.steps p {
-		margin: 0 0 8px;
-	}
-
-	pre {
-		background: var(--surface);
-		border: 1px solid var(--border);
-		border-radius: 8px;
-		padding: 12px 16px;
-		overflow-x: auto;
-		margin: 0;
+		margin: 0 0 var(--space-2);
 	}
 
 	.tag-list {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 8px;
+		gap: var(--space-2);
 	}
 </style>
