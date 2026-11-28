@@ -1,3 +1,4 @@
+import { execFileSync } from 'node:child_process';
 // Pure helpers for scripts/catalog.mjs, kept separate so tests can import them without a checkout.
 
 const NAME = /^[a-z0-9][a-z0-9-]{0,63}$/;
@@ -93,8 +94,11 @@ export function buildCatalog(registry, readSkill) {
 
 const IMAGE_FILE = /^[a-z0-9][a-z0-9-]{0,63}\.(png|jpg|webp)$/;
 const HEX = /^#[0-9A-Fa-f]{6}$/;
-const LINE = /^[^\u0000-\u001F\u007F]+$/;
-const BLOCK = /^[^\u0000-\u0009\u000B-\u001F\u007F]+$/;
+// No control, bidi-override or invisible format characters (same rule as skill-forge lib/showcase.js).
+const LINE = /^[^\u0000-\u001F\u007F-\u009F\u200B-\u200F\u2028-\u202E\u2066-\u2069\uFEFF]+$/;
+const BLOCK = /^[^\u0000-\u0009\u000B-\u001F\u007F-\u009F\u200B-\u200F\u2028-\u202E\u2066-\u2069\uFEFF]+$/;
+// Same caps as skill-forge: SVG text does not wrap, so lengths fit the boxes in Showcase.svelte.
+export const SHOWCASE_LIMITS = { stageName: 18, stageLine: 26, swatchName: 10, imageBytes: 512 * 1024 };
 
 export const SHOWCASE_PATTERNS = { IMAGE_FILE, HEX };
 
@@ -114,6 +118,12 @@ function arr(value, where, min, max) {
 	return value;
 }
 
+/** @param {any[]} stages @param {string} name */
+function oneAccent(stages, name) {
+	if (stages.filter((stage) => stage?.accent === true).length > 1) throw new Error(`showcase: ${name} has more than one accent stage`);
+	return stages;
+}
+
 /**
  * A showcase.json reduced to the fields the site shows, each checked. Throws on anything else,
  * so a bad showcase fails the snapshot instead of the page. Unknown fields are dropped.
@@ -122,22 +132,23 @@ function arr(value, where, min, max) {
  */
 export function checkShowcase(data, name) {
 	const at = (/** @type {string} */ path) => `${name} ${path}`;
-	if (!data || typeof data !== 'object') throw new Error(`showcase: ${name} is not an object`);
+	if (!data || typeof data !== 'object' || Array.isArray(data)) throw new Error(`showcase: ${name} is not an object`);
 	const how = data.howItWorks ?? {};
 	return {
 		value: str(data.value, at('value'), 400),
 		howItWorks: {
 			title: str(how.title, at('howItWorks.title'), 120),
-			stages: arr(how.stages, at('howItWorks.stages'), 2, 6).map((stage, i) => ({
-				name: str(stage?.name, at(`stages[${i}].name`), 40),
-				lines: arr(stage?.lines, at(`stages[${i}].lines`), 1, 4).map((line, j) => str(line, at(`stages[${i}].lines[${j}]`), 60)),
+			stages: oneAccent(arr(how.stages, at('howItWorks.stages'), 2, 4), name).map((stage, i) => ({
+				name: str(stage?.name, at(`stages[${i}].name`), SHOWCASE_LIMITS.stageName),
+				lines: arr(stage?.lines, at(`stages[${i}].lines`), 1, 4).map((line, j) => str(line, at(`stages[${i}].lines[${j}]`), SHOWCASE_LIMITS.stageLine)),
 				accent: stage?.accent === true
 			}))
 		},
 		workflow: arr(data.workflow, at('workflow'), 2, 6).map((step, i) => str(step, at(`workflow[${i}]`), 200)),
 		inAction: arr(data.inAction, at('inAction'), 1, 6).map((item, i) => {
 			const where = at(`inAction[${i}]`);
-			const kinds = ['image', 'excerpt', 'swatches'].filter((kind) => item?.[kind] !== undefined);
+			if (!item || typeof item !== 'object') throw new Error(`showcase: ${where} is not an object`);
+			const kinds = ['image', 'excerpt', 'swatches'].filter((kind) => item[kind] !== undefined);
 			if (kinds.length !== 1) throw new Error(`showcase: ${where} needs exactly one of image, excerpt or swatches`);
 			const base = { caption: str(item.caption, `${where}.caption`, 300), source: str(item.source, `${where}.source`, 200) };
 			if (item.image !== undefined) {
@@ -151,9 +162,39 @@ export function checkShowcase(data, name) {
 				kind: 'swatches',
 				swatches: arr(item.swatches, `${where}.swatches`, 1, 16).map((swatch, j) => {
 					if (typeof swatch?.hex !== 'string' || !HEX.test(swatch.hex)) throw new Error(`showcase: ${where}.swatches[${j}].hex must be #RRGGBB`);
-					return { name: str(swatch.name, `${where}.swatches[${j}].name`, 24), hex: swatch.hex };
+					return { name: str(swatch.name, `${where}.swatches[${j}].name`, SHOWCASE_LIMITS.swatchName), hex: swatch.hex };
 				})
 			};
 		})
 	};
+}
+
+/**
+ * A file's bytes as committed at HEAD, or null when it is not committed as a regular file (missing,
+ * a symlink or a submodule). Reading the blob, not the worktree, means no link can pull in a file
+ * from outside the checkout.
+ * @param {string} repo
+ * @param {string} rel
+ * @returns {Buffer | null}
+ */
+export function trackedBlob(repo, rel) {
+	const entry = execFileSync('git', ['-C', repo, 'ls-files', '-s', '--', rel], { encoding: 'utf8' }).trim();
+	const match = /^(100644|100755) [0-9a-f]+ 0\t(.+)$/.exec(entry);
+	if (!match || match[2] !== rel) return null;
+	return execFileSync('git', ['-C', repo, 'cat-file', 'blob', `HEAD:${rel}`], { maxBuffer: 16 * 1024 * 1024 });
+}
+
+/**
+ * Throws unless the bytes are a PNG, JPEG or WebP image matching the file's extension and within the size cap.
+ * @param {Buffer} bytes
+ * @param {string} rel
+ */
+export function checkImage(bytes, rel) {
+	if (bytes.length > SHOWCASE_LIMITS.imageBytes) throw new Error(`showcase: ${rel} is larger than 512 KB`);
+	const ext = rel.slice(rel.lastIndexOf('.') + 1);
+	const ok =
+		(ext === 'png' && bytes.length > 8 && bytes.readUInt32BE(0) === 0x89504e47 && bytes.readUInt32BE(4) === 0x0d0a1a0a) ||
+		(ext === 'jpg' && bytes.length > 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff) ||
+		(ext === 'webp' && bytes.length > 12 && bytes.toString('latin1', 0, 4) === 'RIFF' && bytes.toString('latin1', 8, 12) === 'WEBP');
+	if (!ok) throw new Error(`showcase: ${rel} is not a ${ext} image`);
 }

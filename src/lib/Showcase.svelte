@@ -7,7 +7,7 @@
 	let { name, showcase }: { name: string; showcase: Showcase } = $props();
 
 	// Diagram geometry, in SVG user units: boxes left to right, all as tall as the tallest.
-	const BOX = 168;
+	const BOX = 184;
 	const GAP = 40;
 	const PAD = 8;
 	const stages = $derived(showcase.howItWorks.stages);
@@ -16,8 +16,6 @@
 	const height = $derived(boxHeight + PAD * 2);
 	const x = (i: number) => PAD + i * (BOX + GAP);
 
-	const SWATCH = 72;
-	const swatchRows = (count: number) => Math.ceil(count / 6);
 </script>
 
 <section class="showcase" aria-labelledby="value-title">
@@ -34,14 +32,15 @@
 		<h2 id="how-title">{showcase.howItWorks.title}</h2>
 	</header>
 	<figure class="figure wide">
-		<svg class="flow" viewBox="0 0 {width} {height}" role="img" aria-labelledby="how-svg-title">
-			<title id="how-svg-title">{stages.map((stage) => stage.name).join(', then ')}</title>
+		<svg class="flow" viewBox="0 0 {width} {height}" role="img" aria-labelledby="how-svg-title" aria-describedby="how-svg-desc">
+			<title id="how-svg-title">{showcase.howItWorks.title}</title>
+			<desc id="how-svg-desc">{stages.map((stage) => `${stage.name}: ${stage.lines.join(' ')}`).join('. Then ')}.</desc>
 			<g class="d-flow">
-				{#each stages.slice(1) as stage, i (stage.name)}
+				{#each stages.slice(1) as _, i (i)}
 					<path d="M{x(i) + BOX} {PAD + boxHeight / 2} H{x(i + 1)}" />
 				{/each}
 			</g>
-			{#each stages as stage, i (stage.name)}
+			{#each stages as stage, i (i)}
 				<rect class={stage.accent ? 'd-box-accent' : 'd-box'} x={x(i)} y={PAD} width={BOX} height={boxHeight} rx="8" />
 				<text class="d-label d-strong" x={x(i) + 12} y={PAD + 24}>{stage.name}</text>
 				{#each stage.lines as line, j (j)}
@@ -67,7 +66,7 @@
 <section class="showcase" aria-labelledby="action-title">
 	<header class="section-head">
 		<p class="eyebrow">See it in action</p>
-		<h2 id="action-title">Run on Skill Forge</h2>
+		<h2 id="action-title">Run on our own products</h2>
 	</header>
 	<div class="samples">
 		{#each showcase.inAction as item, i (i)}
@@ -77,21 +76,17 @@
 				{:else if item.kind === 'excerpt'}
 					<pre><code>{item.excerpt}</code></pre>
 				{:else if item.kind === 'swatches'}
-					{@const rows = swatchRows(item.swatches.length)}
-					<svg
-						class="swatches"
-						viewBox="0 0 {6 * (SWATCH + 8)} {rows * (SWATCH + 40)}"
-						role="img"
-						aria-label={item.swatches.map((s) => `${s.name} ${s.hex}`).join(', ')}
-					>
-						{#each item.swatches as swatch, k (swatch.name)}
-							{@const sx = (k % 6) * (SWATCH + 8)}
-							{@const sy = Math.floor(k / 6) * (SWATCH + 40)}
-							<rect class="swatch" x={sx} y={sy} width={SWATCH} height={SWATCH} rx="8" fill={swatch.hex} />
-							<text class="d-label d-small" x={sx} y={sy + SWATCH + 14}>{swatch.name}</text>
-							<text class="d-label d-mono d-muted" x={sx} y={sy + SWATCH + 28}>{swatch.hex}</text>
+					<ul class="swatches">
+						{#each item.swatches as swatch, k (k)}
+							<li>
+								<svg class="chip-colour" viewBox="0 0 40 40" aria-hidden="true">
+									<rect class="swatch" x="0.5" y="0.5" width="39" height="39" rx="6" fill={swatch.hex} />
+								</svg>
+								<span class="swatch-name">{swatch.name}</span>
+								<code>{swatch.hex}</code>
+							</li>
 						{/each}
-					</svg>
+					</ul>
 				{/if}
 				<figcaption>
 					{item.caption}
@@ -140,12 +135,14 @@
 		border-radius: var(--r-md);
 	}
 
+	/* Excerpts are short report lines: wrap them rather than scroll. */
 	.sample pre {
 		margin: 0;
-		overflow-x: auto;
+		white-space: pre-wrap;
+		overflow-wrap: anywhere;
 	}
 
-	/* The flow keeps readable text on phones and scrolls inside its frame (figure.wide). */
+	/* At most 4 stages (872 units), so text stays near its size; on phones the flow scrolls inside figure.wide. */
 	.figure.wide .flow {
 		min-width: 720px;
 	}
@@ -157,10 +154,30 @@
 	}
 
 	.swatches {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(5rem, 1fr));
+		gap: var(--space-3);
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.swatches li {
+		display: grid;
+		gap: var(--space-1);
+		font-size: var(--fs-sm);
+	}
+
+	.chip-colour {
 		display: block;
 		width: 100%;
-		max-width: 480px;
 		height: auto;
+		max-width: 4rem;
+	}
+
+	.swatches code {
+		color: var(--ink-2);
+		font-size: var(--fs-xs);
 	}
 
 	.source {

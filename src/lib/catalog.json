@@ -1,8 +1,8 @@
 {
 	"source": {
 		"repo": "more-than-code/skill-forge",
-		"commit": "32855f7d6a908af10686617f67e5ee4ecb142eb8",
-		"committedAt": "2026-11-28T09:04:47+00:00"
+		"commit": "7d285cca167d6e1f7655370db4bcec22ec55d371",
+		"committedAt": "2026-11-28T09:14:29+00:00"
 	},
 	"registryVersion": "1.4.0",
 	"skills": [
@@ -86,7 +86,7 @@
 				"scripts/palette.mjs"
 			],
 			"showcase": {
-				"value": "Brands hand over one to four colours; a page or deck needs about a dozen. This skill derives the rest in a fixed, checkable way, so every surface uses a named role and the result is readable before anyone looks.",
+				"value": "Brands hand over one to four colours; a deck or report needs about a dozen. This skill derives the rest in a fixed, checkable way, so every slide uses named roles and the result is readable before anyone looks.",
 				"howItWorks": {
 					"title": "A few brand seeds become eleven checked roles",
 					"stages": [
@@ -111,9 +111,9 @@
 						{
 							"name": "11 roles",
 							"lines": [
-								"brand, accent, deep,",
-								"paper, soft, card, line,",
-								"tint, ink, ink-2"
+								"brand, secondary, accent,",
+								"deep, paper, soft, card,",
+								"line, tint, ink, ink-2"
 							],
 							"accent": false
 						},
@@ -136,7 +136,7 @@
 				],
 				"inAction": [
 					{
-						"caption": "Skill Forge's own brand colours, orange #F97316 and slate #1E293B, run in the light look. The orange was moved to #E96800 so it reaches 3:1 on the paper colour; the teal accent was derived by the split harmony.",
+						"caption": "Skill Forge's own brand colours, orange #F97316 and slate #1E293B, in the light look. The orange was moved to #E96800 to reach 3:1 and APCA 45 on paper; the teal accent was derived by the split harmony.",
 						"source": "palette.mjs --primary '#F97316' --secondary '#1E293B' --look light, 2026-11-28",
 						"kind": "swatches",
 						"swatches": [
@@ -187,10 +187,10 @@
 						]
 					},
 					{
-						"caption": "Two of the checks in the same run's report.",
-						"source": "palette.mjs JSON report, same run",
+						"caption": "Two of the checks from the same run's JSON report, summarised one per line.",
+						"source": "palette.mjs JSON report, same run, 2026-11-28",
 						"kind": "excerpt",
-						"excerpt": "ink on paper   WCAG 15.57 (min 4.5)  APCA 98.4  pass\nink on card    WCAG 16.39 (min 4.5)  APCA 101.9  pass"
+						"excerpt": "ink on paper: WCAG 15.57 (min 4.5), APCA 98.4, pass\nink on card: WCAG 16.39 (min 4.5), APCA 101.9, pass"
 					}
 				]
 			}
@@ -549,10 +549,10 @@
 				],
 				"inAction": [
 					{
-						"caption": "The skill's checklist run on our own home page found content gaps, not design gaps. These are the input to the home page redesign now in progress.",
-						"source": "landing-page checklist on skillforgecloud.com home, 2026-11-28",
+						"caption": "Three items of the skill's checklist that the live home page did not meet when the skill was run on it.",
+						"source": "landing-page checklist on the skillforgecloud.com home page, skill-forge-site main at efa4216, 2026-11-28",
 						"kind": "excerpt",
-						"excerpt": "Palette with tints, AA contrast in both themes: met (design tokens)\nA visual for each key point: missing\nSee it in action walkthrough: missing\nUse cases and comparison: missing\nClaims ledger in the site repo: missing"
+						"excerpt": "Not met: Value first; section order as in doctrine 4; each point has a visual\nNot met: Claims ledger complete\nNot met: Comparison rows are buyer questions, sourced and dated"
 					}
 				]
 			}
@@ -758,11 +758,11 @@
 				],
 				"inAction": [
 					{
-						"caption": "Our skill catalog before and after its rules: 42 separate cards became one panel with ruled rows, tags became small quiet chips. The catalog is not an app screen, so only the rules that fit a public page were applied.",
-						"source": "skillforgecloud.com, before: live site; after: design-tokens branch of skill-forge-site, 2026-11-28",
+						"caption": "Left before, right after: the skill catalog went from 42 separate cards to one panel with ruled rows and hairline edges. The skill is written for app screens; on this public listing page only its panel, row and spacing rules were applied, and tags stay filled chips.",
+						"source": "skill-forge-site, before: main at efa4216 (the live site); after: tokens commit 3fb0918, 2026-11-28",
 						"kind": "image",
 						"file": "catalog-before-after.png",
-						"alt": "Skill Forge catalog page, 42 separate cards on the left and one ruled list on the right"
+						"alt": "Skill Forge catalog page: separate boxed cards on the left, one ruled list on the right"
 					}
 				]
 			}
@@ -974,7 +974,7 @@
 				"tokens.json"
 			],
 			"showcase": {
-				"value": "Every colour, size, radius and gap lives in one token file, in light and dark, and a test fails the build when a colour pair drops below WCAG AA. On our own Site it also caught a real bug: the logo disappeared on the dark header.",
+				"value": "Every colour, type size, spacing step, radius and motion value lives in one token file, in light and dark, and its checker fails (exit 1) when a declared colour pair drops below WCAG AA in either theme.",
 				"howItWorks": {
 					"title": "One token file drives the page, and CI checks every colour pair",
 					"stages": [
@@ -1016,31 +1016,31 @@
 					]
 				},
 				"workflow": [
-					"Seed the colour roles from the brand colours (brand-palette-roles does this step).",
-					"Fill tokens.json with the skill's role names, then generate tokens.css.",
-					"Replace every literal colour, size and gap in the CSS with a token.",
-					"Run the contrast check and add a test so a stale tokens.css or a failing pair fails CI."
+					"Copy tokens.json and its scripts into the repo, then swap the values for the product's own (brand-palette-roles when starting from brand colours).",
+					"Generate the CSS with tokens.mjs css --out tokens.css.",
+					"Run tokens.mjs check and fix every WCAG failure.",
+					"Load tokens.css before every other stylesheet, and add the pre-paint script so the stored theme applies before first paint."
 				],
 				"inAction": [
 					{
-						"caption": "Dark mode before and after. Before, the logo's slate tile matched the header and vanished; after, it keeps a hairline edge on a neutral dark canvas.",
-						"source": "skillforgecloud.com, before: live site; after: design-tokens branch of skill-forge-site, 2026-11-28",
+						"caption": "Dark mode, left before and right after the tokens. Before, the logo's slate tile matched the header and disappeared; after, it keeps a hairline edge on a neutral dark canvas.",
+						"source": "skill-forge-site, before: main at efa4216 (the live site); after: tokens commit 3fb0918, 2026-11-28",
 						"kind": "image",
 						"file": "home-dark-before-after.png",
-						"alt": "Skill Forge home page in dark mode, the live site on the left and the token version on the right"
+						"alt": "Skill Forge home page in dark mode: on the left the logo tile blends into the header, on the right it has a visible edge"
 					},
 					{
-						"caption": "Light mode before and after: a warm paper canvas, the brand orange as the primary button with dark text, links in a darker orange that passes 4.5:1.",
-						"source": "skillforgecloud.com, before: live site; after: design-tokens branch of skill-forge-site, 2026-11-28",
+						"caption": "Light mode, left before and right after: a warm paper canvas, the brand orange as the primary button with dark text, and darker orange links.",
+						"source": "skill-forge-site, before: main at efa4216 (the live site); after: tokens commit 3fb0918, 2026-11-28",
 						"kind": "image",
 						"file": "home-light-before-after.png",
-						"alt": "Skill Forge home page in light mode, the live site on the left and the token version on the right"
+						"alt": "Skill Forge home page in light mode: cool white canvas on the left, warm paper canvas with an orange primary button on the right"
 					},
 					{
-						"caption": "The contrast check on the Site's tokens.",
-						"source": "tokens.mjs check on skill-forge-site, 2026-11-28",
+						"caption": "The checker's summary line for the Site's tokens, as printed (the four advisories are listed above it and do not fail the check).",
+						"source": "tokens.mjs check on skill-forge-site at 3fb0918, 2026-11-28",
 						"kind": "excerpt",
-						"excerpt": "132 pairs checked in light and dark\n0 WCAG 2.2 failures\n4 APCA advisories (reported, not blocking)"
+						"excerpt": "132 pairs checked (light and dark): 0 WCAG failures, 4 APCA advisories"
 					}
 				]
 			}

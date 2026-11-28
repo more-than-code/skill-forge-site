@@ -50,6 +50,11 @@ It also reads each skill's optional showcase (`showcase/<skill>/showcase.json` i
 works, workflow, see it in action); the diagram and colour swatches are drawn from the data with the
 shared diagram classes, so they follow the tokens and need no inline styles.
 
+Showcase files are read from the commit (`git cat-file`), never through the worktree, so a link cannot
+pull in another file; images must be real PNG, JPEG or WebP under 512 KB. `static/showcase/` is generated:
+commit it together with `catalog.json` (a test checks they match). The script replaces it only after
+every showcase has passed, so a failed refresh leaves both as they were.
+
 The script refuses a dirty checkout and rejects names, versions or tags outside the registry's
 patterns. Skill and file links point at the snapshot's commit, so they always match the page.
 
