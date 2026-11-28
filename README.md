@@ -33,6 +33,11 @@ public registry (`more-than-code/skill-forge`): installable skills with version,
 `description` from each `SKILL.md`, and file list, plus counts and the source commit and date.
 Every number on the site is computed from it; there are no live usage or evaluation figures yet.
 
+The catalog page groups skills by purpose. `src/lib/groups.js` holds the groups (each with an icon in
+`src/lib/GroupIcon.svelte`) and, for every skill, its group and a one-line summary written for
+visitors; the full `description` stays on the skill's page. `pnpm test` fails when a skill in the
+snapshot has no entry, so a refresh that adds a skill must place it.
+
 Refresh it from a clean skill-forge checkout at the commit you want published (normally `main`):
 
 ```bash
