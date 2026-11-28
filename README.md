@@ -55,6 +55,11 @@ pull in another file; images must be real PNG, JPEG or WebP under 512 KB. `stati
 commit it together with `catalog.json` (a test checks they match). The script replaces it only after
 every showcase has passed, so a failed refresh leaves both as they were.
 
+The site is in English. Inline CJK terms in a skill's description (for example "主色 primary") are
+dropped from the snapshot (`englishOnly` in `scripts/catalog-lib.mjs`), and the snapshot fails if any
+other CJK text is left; showcase text must be English. The guard fails the build if a CJK character
+reaches any built page or text file.
+
 The script refuses a dirty checkout and rejects names, versions or tags outside the registry's
 patterns. Skill and file links point at the snapshot's commit, so they always match the page.
 

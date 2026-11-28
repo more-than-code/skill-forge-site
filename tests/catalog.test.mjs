@@ -12,6 +12,7 @@ import {
 	buildCatalog,
 	checkImage,
 	checkShowcase,
+	englishOnly,
 	frontmatterDescription,
 	trackedBlob
 } from '../scripts/catalog-lib.mjs';
@@ -177,4 +178,12 @@ test('trackedBlob reads committed regular files only, never through a link', (t)
 	assert.equal(trackedBlob(repo, 'showcase/x/link.png'), null);
 	assert.equal(trackedBlob(repo, 'showcase/x/untracked.png'), null);
 	assert.equal(trackedBlob(repo, 'showcase/x/missing.png'), null);
+});
+
+test('englishOnly drops inline CJK terms from descriptions and refuses any left over', () => {
+	assert.equal(englishOnly('colours (主色 primary, 辅色 secondary) plus', 'a'), 'colours (primary, secondary) plus');
+	assert.equal(englishOnly('interface ("quiet UI", 安静的页面: greyscale first)', 'b'), 'interface ("quiet UI": greyscale first)');
+	assert.equal(englishOnly('Plain English only.', 'c'), 'Plain English only.');
+	assert.throws(() => englishOnly('ends in 中文', 'd'), /still has CJK/);
+	assert.throws(() => checkShowcase({ ...showcase(), value: '价值 first' }, 'x'), /in English/);
 });

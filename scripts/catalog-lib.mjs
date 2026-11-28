@@ -48,6 +48,28 @@ export function frontmatterDescription(text) {
 	return value.replace(/\s+/g, ' ').trim();
 }
 
+// CJK scripts (Han, Hiragana, Katakana, Hangul, Bopomofo) and full-width punctuation. The site is in
+// English, so it shows none of these, even where a SKILL.md carries inline terms such as "主色 primary".
+export const CJK = /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}\p{Script=Bopomofo}\u3000-\u303F\uFF00-\uFFEF]/u;
+const CJK_RUN = /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}\p{Script=Bopomofo}\u3000-\u303F\uFF00-\uFFEF]+/gu;
+
+/**
+ * A SKILL.md description with its inline CJK terms taken out: a term before its English word
+ * ("主色 primary" becomes "primary") or a term in a list before a colon or bracket ('"quiet UI", 安静的页面:'
+ * becomes '"quiet UI":'). Throws if any remains, so the snapshot fails rather than the page.
+ * @param {string} text
+ * @param {string} name the skill, for the message
+ */
+export function englishOnly(text, name) {
+	const out = text
+		.replace(new RegExp(`\\s*,\\s*${CJK_RUN.source}\\s*(?=[:)\\]])`, 'gu'), '')
+		.replace(new RegExp(`${CJK_RUN.source}\\s+`, 'gu'), '')
+		.replace(/\s+/g, ' ')
+		.trim();
+	if (CJK.test(out)) throw new Error(`description of ${name} still has CJK text after removing inline terms`);
+	return out;
+}
+
 /**
  * The public catalog the site is built from: installable skills with what a visitor needs, plus
  * counts of the other artifact kinds. Throws on names, versions or tags the site could not
@@ -66,12 +88,13 @@ export function buildCatalog(registry, readSkill) {
 			for (const tag of tags) if (!NAME.test(tag)) throw new Error(`bad tag on ${skill.name}: ${tag}`);
 			const { description, files, showcase } = readSkill(skill);
 			if (!description) throw new Error(`no description in ${skill.name}/SKILL.md`);
+			const shown = englishOnly(description, skill.name);
 			for (const file of files) if (!FILE_PATH.test(file)) throw new Error(`bad file in ${skill.name}: ${file}`);
 			return {
 				name: skill.name,
 				version: skill.version,
 				tags,
-				description,
+				description: shown,
 				path: skill.path,
 				files,
 				showcase: showcase ? checkShowcase(showcase, skill.name) : null
@@ -107,6 +130,7 @@ function str(value, where, max, pattern = LINE) {
 	if (typeof value !== 'string' || value.trim() === '' || value.length > max || !pattern.test(value)) {
 		throw new Error(`showcase: ${where} must be printable text of at most ${max} characters`);
 	}
+	if (CJK.test(value)) throw new Error(`showcase: ${where} must be in English (the site shows no CJK text)`);
 	return value;
 }
 

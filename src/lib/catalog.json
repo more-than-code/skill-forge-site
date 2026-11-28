@@ -1,8 +1,8 @@
 {
 	"source": {
 		"repo": "more-than-code/skill-forge",
-		"commit": "7d285cca167d6e1f7655370db4bcec22ec55d371",
-		"committedAt": "2026-11-28T09:14:29+00:00"
+		"commit": "f4cdf9841532a99e13877ddfdc6653bcf30274b4",
+		"committedAt": "2026-11-28T10:13:40+00:00"
 	},
 	"registryVersion": "1.4.0",
 	"skills": [
@@ -76,7 +76,7 @@
 				"decks",
 				"accessibility"
 			],
-			"description": "Turn a brand's few colours (主色 primary, 辅色 secondary, 强调色 accent, 背景色 background) plus a light or dark look into an 11-role palette (brand, secondary, accent, deep, paper, soft, card, line, tint, ink, ink-2) that stays readable, checked with WCAG 2.2 contrast, APCA and colour-blind simulation, with CSS variables, PowerPoint theme colour slots, eight style presets and CJK font pairings. Activate when making a deck, report, poster or other branded output from a client's or brand's colours, or when reviewing one for colour and contrast.",
+			"description": "Turn a brand's few colours (primary, secondary, accent, background) plus a light or dark look into an 11-role palette (brand, secondary, accent, deep, paper, soft, card, line, tint, ink, ink-2) that stays readable, checked with WCAG 2.2 contrast, APCA and colour-blind simulation, with CSS variables, PowerPoint theme colour slots, eight style presets and CJK font pairings. Activate when making a deck, report, poster or other branded output from a client's or brand's colours, or when reviewing one for colour and contrast.",
 			"path": "inventory/skills/brand-palette-roles",
 			"files": [
 				"SKILL.md",
@@ -705,7 +705,7 @@
 				"design",
 				"ui"
 			],
-			"description": "Usage rules for a dense, calm work-tool interface (\"quiet UI\", 安静的页面: greyscale first, hairlines, little motion): which type size, weight and radius to use where, at most two nested boxes, motion only on page change, one primary action per page, component states, Chinese UI text rules, and a style checklist to run on a diff or a screenshot. All values come from `ui-design-tokens`. Activate when designing, building or reviewing a page or component of an app, console or dashboard in this style. Not for public landing or marketing pages (`landing-page`).",
+			"description": "Usage rules for a dense, calm work-tool interface (\"quiet UI\": greyscale first, hairlines, little motion): which type size, weight and radius to use where, at most two nested boxes, motion only on page change, one primary action per page, component states, Chinese UI text rules, and a style checklist to run on a diff or a screenshot. All values come from `ui-design-tokens`. Activate when designing, building or reviewing a page or component of an app, console or dashboard in this style. Not for public landing or marketing pages (`landing-page`).",
 			"path": "inventory/skills/quiet-ui-style-guide",
 			"files": [
 				"SKILL.md"

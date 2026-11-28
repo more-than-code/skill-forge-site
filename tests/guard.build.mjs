@@ -39,6 +39,11 @@ test('no inline styles, so the CSP in _headers (style-src self) holds', () => {
 	assert.match(read('_headers'), /Content-Security-Policy: default-src 'none'/);
 });
 
+test('the site is in English: no CJK characters in any built page or text file', () => {
+	const cjk = /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}\p{Script=Bopomofo}\u3000-\u303F\uFF00-\uFFEF]/u;
+	for (const f of text) assert.doesNotMatch(read(f), cjk, f);
+});
+
 test('every absolute URL is on an allowed host', () => {
 	for (const f of text) {
 		if (f === '_headers') continue;
