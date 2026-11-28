@@ -1,10 +1,12 @@
 <script lang="ts">
 	import Head from '$lib/Head.svelte';
-	import { catalog } from '$lib/catalog';
+	import Showcase from '$lib/Showcase.svelte';
+	import { catalog, showcaseOf } from '$lib/catalog';
 	import { sourceUrl } from '$lib/links';
 
 	let { data } = $props();
 	const skill = $derived(data.skill);
+	const showcase = $derived(showcaseOf(skill));
 	const manifest = $derived(`"${skill.name}": "^${skill.version}"`);
 </script>
 
@@ -20,6 +22,10 @@
 			<a class="chip" href="/tags/{tag}">{tag}</a>
 		{/each}
 	</p>
+{/if}
+
+{#if showcase}
+	<Showcase name={skill.name} {showcase} />
 {/if}
 
 <h2>Use it</h2>

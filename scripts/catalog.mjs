@@ -6,10 +6,11 @@
 // reproducible from its commit. The snapshot records the skill-forge commit it came from.
 // Refresh it from the commit you want published (normally skill-forge main).
 import { execFileSync } from 'node:child_process';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { buildCatalog, frontmatterDescription } from './catalog-lib.mjs';
+import { buildCatalog, checkImage, frontmatterDescription, trackedBlob } from './catalog-lib.mjs';
 
 const root = process.argv[2];
 if (!root) {
@@ -24,6 +25,12 @@ if (git('status', '--porcelain') !== '') {
 	process.exit(1);
 }
 
+/** showcase/<name>/showcase.json at HEAD, if committed as a regular file; buildCatalog checks its content. */
+function readShowcase(/** @type {string} */ name) {
+	const bytes = trackedBlob(repo, `showcase/${name}/showcase.json`);
+	return bytes === null ? null : JSON.parse(bytes.toString('utf8'));
+}
+
 const registry = JSON.parse(readFileSync(join(repo, 'registry.json'), 'utf8'));
 const catalog = buildCatalog(registry, (skill) => {
 	// buildCatalog has already checked skill.path against inventory/skills/<name>. Only tracked files
@@ -35,9 +42,33 @@ const catalog = buildCatalog(registry, (skill) => {
 		.sort();
 	return {
 		description: frontmatterDescription(readFileSync(join(repo, skill.path, 'SKILL.md'), 'utf8')),
-		files
+		files,
+		showcase: readShowcase(skill.name)
 	};
 });
+
+// Showcase images come from the commit, never through a link in the worktree. They are written to a
+// fresh folder that replaces static/showcase/ only once every image has passed, so a failed refresh
+// leaves the committed images and catalog.json as they were.
+const imagesOut = fileURLToPath(new URL('../static/showcase/', import.meta.url));
+const staging = mkdtempSync(join(tmpdir(), 'showcase-'));
+try {
+	for (const skill of catalog.skills) {
+		for (const item of skill.showcase?.inAction ?? []) {
+			if (item.kind !== 'image') continue;
+			const rel = `showcase/${skill.name}/${item.file}`;
+			const bytes = trackedBlob(repo, rel);
+			if (bytes === null) throw new Error(`catalog: ${rel} is not a committed regular file`);
+			checkImage(bytes, rel);
+			mkdirSync(join(staging, skill.name), { recursive: true });
+			writeFileSync(join(staging, skill.name, item.file), bytes);
+		}
+	}
+	rmSync(imagesOut, { recursive: true, force: true });
+	cpSync(staging, imagesOut, { recursive: true });
+} finally {
+	rmSync(staging, { recursive: true, force: true });
+}
 
 const snapshot = {
 	source: {

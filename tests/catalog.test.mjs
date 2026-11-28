@@ -1,7 +1,21 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
-import { PATTERNS, buildCatalog, frontmatterDescription } from '../scripts/catalog-lib.mjs';
+import { execFileSync } from 'node:child_process';
+import { mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join, relative } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import {
+	PATTERNS,
+	SHOWCASE_LIMITS,
+	SHOWCASE_PATTERNS,
+	buildCatalog,
+	checkImage,
+	checkShowcase,
+	englishOnly,
+	frontmatterDescription,
+	trackedBlob
+} from '../scripts/catalog-lib.mjs';
 
 test('frontmatterDescription reads plain, quoted and block descriptions', () => {
 	assert.equal(frontmatterDescription('---\nname: a\ndescription: Plain text.\n---\nbody'), 'Plain text.');
@@ -64,5 +78,112 @@ test('the committed snapshot is well formed', () => {
 		assert.match(s.path, PATTERNS.SKILL_PATH);
 		for (const tag of s.tags) assert.match(tag, PATTERNS.NAME);
 		for (const file of s.files) assert.match(file, PATTERNS.FILE_PATH);
+		for (const item of s.showcase?.inAction ?? []) {
+			assert.ok(['image', 'excerpt', 'swatches'].includes(item.kind), `${s.name}: item kind`);
+			if (item.kind === 'image') assert.match(item.file, SHOWCASE_PATTERNS.IMAGE_FILE);
+			for (const swatch of item.swatches ?? []) assert.match(swatch.hex, SHOWCASE_PATTERNS.HEX);
+		}
 	}
+});
+
+const showcase = () => ({
+	value: 'Saves time.',
+	howItWorks: { title: 'Two parts', stages: [{ name: 'In', lines: ['a'] }, { name: 'Out', lines: ['b'], accent: true }] },
+	workflow: ['One', 'Two'],
+	inAction: [
+		{ caption: 'c', source: 's', image: { file: 'shot.png', alt: 'a' } },
+		{ caption: 'c', source: 's', excerpt: 'x\ny' },
+		{ caption: 'c', source: 's', swatches: [{ name: 'brand', hex: '#E96800' }] }
+	],
+	extra: 'dropped'
+});
+
+test('checkShowcase keeps only the shown fields and tags each item with its kind', () => {
+	const out = checkShowcase(showcase(), 'x');
+	assert.equal('extra' in out, false);
+	assert.deepEqual(out.inAction.map((i) => i.kind), ['image', 'excerpt', 'swatches']);
+	assert.equal(out.howItWorks.stages[0].accent, false);
+	assert.equal(out.inAction[0].file, 'shot.png');
+});
+
+test('checkShowcase refuses what the page could not show safely', () => {
+	const bad = (edit) => {
+		const data = showcase();
+		edit(data);
+		return () => checkShowcase(data, 'x');
+	};
+	assert.throws(bad((d) => (d.inAction[0].image.file = '../x.png')), /plain image name/);
+	assert.throws(bad((d) => (d.inAction[0].image.file = 'x.svg')), /plain image name/);
+	assert.throws(bad((d) => (d.inAction[2].swatches[0].hex = 'red;}')), /#RRGGBB/);
+	assert.throws(bad((d) => (d.value = 'a\u0007b')), /printable/);
+	assert.throws(bad((d) => (d.inAction[1].image = { file: 'a.png', alt: 'a' })), /exactly one/);
+	assert.throws(bad((d) => (d.workflow = ['only one'])), /2 to 6/);
+	assert.throws(bad((d) => (d.howItWorks.stages[0].lines = [])), /1 to 4/);
+});
+
+test('showcase images in static/ are exactly the ones the snapshot names', () => {
+	const snapshot = JSON.parse(readFileSync(new URL('../src/lib/catalog.json', import.meta.url), 'utf8'));
+	const named = new Set(
+		snapshot.skills.flatMap((s) => (s.showcase?.inAction ?? []).filter((i) => i.kind === 'image').map((i) => `${s.name}/${i.file}`))
+	);
+	const dir = fileURLToPath(new URL('../static/showcase/', import.meta.url));
+	let present = [];
+	try {
+		present = readdirSync(dir, { recursive: true, withFileTypes: true })
+			.filter((e) => e.isFile())
+			.map((e) => relative(dir, join(e.parentPath ?? e.path, e.name)));
+	} catch (error) {
+		if (error.code !== 'ENOENT') throw error;
+	}
+	assert.deepEqual(present.sort(), [...named].sort());
+});
+
+test('checkShowcase enforces the layout limits, one accent and object items', () => {
+	const bad = (edit) => {
+		const data = showcase();
+		edit(data);
+		return () => checkShowcase(data, 'x');
+	};
+	assert.throws(bad((d) => (d.howItWorks.stages[0].name = 'n'.repeat(SHOWCASE_LIMITS.stageName + 1))), /printable/);
+	assert.throws(bad((d) => (d.howItWorks.stages[0].lines = ['l'.repeat(SHOWCASE_LIMITS.stageLine + 1)])), /printable/);
+	assert.throws(bad((d) => (d.inAction[2].swatches[0].name = 's'.repeat(SHOWCASE_LIMITS.swatchName + 1))), /printable/);
+	assert.throws(bad((d) => (d.howItWorks.stages = Array.from({ length: 5 }, () => ({ name: 'a', lines: ['b'] })))), /2 to 4/);
+	assert.throws(bad((d) => d.howItWorks.stages.forEach((st) => (st.accent = true))), /more than one accent/);
+	assert.throws(bad((d) => (d.inAction[0] = null)), /not an object/);
+	assert.throws(bad((d) => (d.inAction[0].caption = 'flip \u202E')), /printable/);
+	assert.throws(bad((d) => delete d.howItWorks), /printable/);
+});
+
+test('checkImage accepts real PNG bytes only, under the size cap', () => {
+	const png = Buffer.concat([Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]), Buffer.alloc(8)]);
+	checkImage(png, 'a/b.png');
+	assert.throws(() => checkImage(Buffer.from('<svg/>'), 'a/b.png'), /not a png/);
+	assert.throws(() => checkImage(png, 'a/b.jpg'), /not a jpg/);
+	assert.throws(() => checkImage(Buffer.concat([png, Buffer.alloc(SHOWCASE_LIMITS.imageBytes)]), 'a/b.png'), /larger than/);
+});
+
+test('trackedBlob reads committed regular files only, never through a link', (t) => {
+	const repo = mkdtempSync(join(tmpdir(), 'site-blob-'));
+	t.after(() => rmSync(repo, { recursive: true, force: true }));
+	const git = (...args) => execFileSync('git', ['-C', repo, ...args], { encoding: 'utf8' });
+	git('init', '-q');
+	mkdirSync(join(repo, 'showcase', 'x'), { recursive: true });
+	writeFileSync(join(repo, 'showcase', 'x', 'real.png'), 'committed');
+	writeFileSync(join(repo, 'secret.txt'), 'do not publish');
+	symlinkSync('../../secret.txt', join(repo, 'showcase', 'x', 'link.png'));
+	git('add', '-A');
+	git('-c', 'user.name=t', '-c', 'user.email=t@example.invalid', 'commit', '-q', '-m', 'x');
+	writeFileSync(join(repo, 'showcase', 'x', 'untracked.png'), 'not committed');
+	assert.equal(trackedBlob(repo, 'showcase/x/real.png')?.toString(), 'committed');
+	assert.equal(trackedBlob(repo, 'showcase/x/link.png'), null);
+	assert.equal(trackedBlob(repo, 'showcase/x/untracked.png'), null);
+	assert.equal(trackedBlob(repo, 'showcase/x/missing.png'), null);
+});
+
+test('englishOnly drops inline CJK terms from descriptions and refuses any left over', () => {
+	assert.equal(englishOnly('colours (主色 primary, 辅色 secondary) plus', 'a'), 'colours (primary, secondary) plus');
+	assert.equal(englishOnly('interface ("quiet UI", 安静的页面: greyscale first)', 'b'), 'interface ("quiet UI": greyscale first)');
+	assert.equal(englishOnly('Plain English only.', 'c'), 'Plain English only.');
+	assert.throws(() => englishOnly('ends in 中文', 'd'), /still has CJK/);
+	assert.throws(() => checkShowcase({ ...showcase(), value: '价值 first' }, 'x'), /in English/);
 });

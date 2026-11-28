@@ -1,8 +1,8 @@
 {
 	"source": {
 		"repo": "more-than-code/skill-forge",
-		"commit": "29f16eaa23a10594caddf668c18637db5edf22b5",
-		"committedAt": "2026-11-25T19:15:34+13:00"
+		"commit": "9722bb43dfa90d13ac07619c03b5d3ed418c8ed4",
+		"committedAt": "2026-11-28T23:39:59+13:00"
 	},
 	"registryVersion": "1.4.0",
 	"skills": [
@@ -17,7 +17,8 @@
 			"path": "inventory/skills/api-contracts",
 			"files": [
 				"SKILL.md"
-			]
+			],
+			"showcase": null
 		},
 		{
 			"name": "audio-webkit-cleanup",
@@ -32,7 +33,8 @@
 			"path": "inventory/skills/audio-webkit-cleanup",
 			"files": [
 				"SKILL.md"
-			]
+			],
+			"showcase": null
 		},
 		{
 			"name": "audit-trail",
@@ -45,7 +47,8 @@
 			"path": "inventory/skills/audit-trail",
 			"files": [
 				"SKILL.md"
-			]
+			],
+			"showcase": null
 		},
 		{
 			"name": "aws-toolkit-skills",
@@ -60,22 +63,154 @@
 			"path": "inventory/skills/aws-toolkit-skills",
 			"files": [
 				"SKILL.md"
-			]
+			],
+			"showcase": null
+		},
+		{
+			"name": "brand-palette-roles",
+			"version": "0.1.0",
+			"tags": [
+				"design",
+				"color",
+				"brand",
+				"decks",
+				"accessibility"
+			],
+			"description": "Turn a brand's few colours (primary, secondary, accent, background) plus a light or dark look into an 11-role palette (brand, secondary, accent, deep, paper, soft, card, line, tint, ink, ink-2) that stays readable, checked with WCAG 2.2 contrast, APCA and colour-blind simulation, with CSS variables, PowerPoint theme colour slots, eight style presets and CJK font pairings. Activate when making a deck, report, poster or other branded output from a client's or brand's colours, or when reviewing one for colour and contrast.",
+			"path": "inventory/skills/brand-palette-roles",
+			"files": [
+				"SKILL.md",
+				"presets.json",
+				"scripts/color.mjs",
+				"scripts/contrast.mjs",
+				"scripts/palette.mjs"
+			],
+			"showcase": {
+				"value": "Brands hand over one to four colours; a deck or report needs about a dozen. This skill derives the rest in a fixed, checkable way, so every slide uses named roles and the result is readable before anyone looks.",
+				"howItWorks": {
+					"title": "A few brand seeds become eleven checked roles",
+					"stages": [
+						{
+							"name": "Seeds and a look",
+							"lines": [
+								"primary, secondary,",
+								"accent, background;",
+								"light or dark"
+							],
+							"accent": false
+						},
+						{
+							"name": "palette.mjs",
+							"lines": [
+								"harmony fills the gaps",
+								"nudges the brand colour",
+								"until it reads"
+							],
+							"accent": true
+						},
+						{
+							"name": "11 roles",
+							"lines": [
+								"brand, secondary, accent,",
+								"deep, paper, soft, card,",
+								"line, tint, ink, ink-2"
+							],
+							"accent": false
+						},
+						{
+							"name": "Checks and output",
+							"lines": [
+								"WCAG 2.2, APCA,",
+								"colour-blind simulation",
+								"CSS or PowerPoint slots"
+							],
+							"accent": false
+						}
+					]
+				},
+				"workflow": [
+					"Collect the brand's seed colours and the look (light or dark).",
+					"Run palette.mjs with the seeds; it reports every role and every contrast check.",
+					"Fix any failing pair by changing a seed or the look, never by hand-editing a role.",
+					"Emit the roles as CSS variables or PowerPoint theme colour slots."
+				],
+				"inAction": [
+					{
+						"caption": "Skill Forge's own brand colours, orange #F97316 and slate #1E293B, in the light look. The orange was moved to #E96800 to reach 3:1 and APCA 45 on paper; the teal accent was derived by the split harmony.",
+						"source": "palette.mjs --primary '#F97316' --secondary '#1E293B' --look light, 2026-11-28",
+						"kind": "swatches",
+						"swatches": [
+							{
+								"name": "brand",
+								"hex": "#E96800"
+							},
+							{
+								"name": "secondary",
+								"hex": "#1E293B"
+							},
+							{
+								"name": "accent",
+								"hex": "#009EA1"
+							},
+							{
+								"name": "deep",
+								"hex": "#3D2820"
+							},
+							{
+								"name": "paper",
+								"hex": "#F7F6F2"
+							},
+							{
+								"name": "soft",
+								"hex": "#ECEBE7"
+							},
+							{
+								"name": "card",
+								"hex": "#FCFCFA"
+							},
+							{
+								"name": "line",
+								"hex": "#D9D8D5"
+							},
+							{
+								"name": "tint",
+								"hex": "#F8E3D6"
+							},
+							{
+								"name": "ink",
+								"hex": "#1E1D1B"
+							},
+							{
+								"name": "ink-2",
+								"hex": "#635F59"
+							}
+						]
+					},
+					{
+						"caption": "Two of the checks from the same run's JSON report, summarised one per line.",
+						"source": "palette.mjs JSON report, same run, 2026-11-28",
+						"kind": "excerpt",
+						"excerpt": "ink on paper: WCAG 15.57 (min 4.5), APCA 98.4, pass\nink on card: WCAG 16.39 (min 4.5), APCA 101.9, pass"
+					}
+				]
+			}
 		},
 		{
 			"name": "claude-project-steward",
-			"version": "0.2.2",
+			"version": "0.3.0",
 			"tags": [
 				"cloud",
 				"claude-projects",
 				"setup",
 				"diagnosis"
 			],
-			"description": "Set up, check and repair how a Claude Project's threads get their instructions, skills and subagents from Skill Forge — the cloud environment's setup script, the topic line, the Project instructions and each repository's CLAUDE.md/AGENTS.md. Activate when the owner asks to set up Skill Forge for a Project, to check a Project's setup or context, why threads miss rules or skills, or why rules load twice; also when a thread notices its workflow rules, skills or subagents missing or duplicated.",
+			"description": "Set up, check and repair how a Claude Project's threads get their instructions, skills and subagents from Skill Forge — the cloud environment's setup script, the topic line, the Project instructions and each repository's CLAUDE.md/AGENTS.md. Activate when the owner asks to set up Skill Forge for a Project, to check a Project's setup or context, why threads miss rules or skills, or why rules load twice; also when a thread notices its workflow rules, skills or subagents missing or duplicated, or when a local session finds a repo's declared skills missing.",
 			"path": "inventory/skills/claude-project-steward",
 			"files": [
-				"SKILL.md"
-			]
+				"SKILL.md",
+				"diagnose.md"
+			],
+			"showcase": null
 		},
 		{
 			"name": "code-quality",
@@ -88,7 +223,8 @@
 			"path": "inventory/skills/code-quality",
 			"files": [
 				"SKILL.md"
-			]
+			],
+			"showcase": null
 		},
 		{
 			"name": "codex-config-toml",
@@ -103,7 +239,8 @@
 			"path": "inventory/skills/codex-config-toml",
 			"files": [
 				"SKILL.md"
-			]
+			],
+			"showcase": null
 		},
 		{
 			"name": "coding-discipline",
@@ -117,7 +254,8 @@
 			"files": [
 				"EXAMPLES.md",
 				"SKILL.md"
-			]
+			],
+			"showcase": null
 		},
 		{
 			"name": "data-migration",
@@ -130,7 +268,8 @@
 			"path": "inventory/skills/data-migration",
 			"files": [
 				"SKILL.md"
-			]
+			],
+			"showcase": null
 		},
 		{
 			"name": "defect-drainer-intake",
@@ -146,7 +285,8 @@
 			"path": "inventory/skills/defect-drainer-intake",
 			"files": [
 				"SKILL.md"
-			]
+			],
+			"showcase": null
 		},
 		{
 			"name": "defect-drainer-test-plans",
@@ -163,7 +303,24 @@
 			"path": "inventory/skills/defect-drainer-test-plans",
 			"files": [
 				"SKILL.md"
-			]
+			],
+			"showcase": null
+		},
+		{
+			"name": "defect-drainer-workflow",
+			"version": "0.1.0",
+			"tags": [
+				"defects",
+				"workflow",
+				"mcp",
+				"claude-projects"
+			],
+			"description": "File, claim, fix, submit and resolve work items through the Defect Drainer MCP tools from a coding session or Claude Project thread. Covers filing in the right DD project first, requirements (needs_direction), claim tokens and keep-alive, DD repo names, after-fix evidence, submit_fix, parked Submitted-unverified fixes, resolving after merge, and the refusal codes. Use when a task names a DD item (DEF-…), when the owner asks to file or track work in Defect Drainer, or when a DD tool call is refused.",
+			"path": "inventory/skills/defect-drainer-workflow",
+			"files": [
+				"SKILL.md"
+			],
+			"showcase": null
 		},
 		{
 			"name": "deployment-strategy",
@@ -176,7 +333,8 @@
 			"path": "inventory/skills/deployment-strategy",
 			"files": [
 				"SKILL.md"
-			]
+			],
+			"showcase": null
 		},
 		{
 			"name": "design-sync-flutter",
@@ -191,7 +349,8 @@
 			"files": [
 				"SKILL.md",
 				"references/ds-layout.md"
-			]
+			],
+			"showcase": null
 		},
 		{
 			"name": "design-sync-svelte",
@@ -207,7 +366,8 @@
 				"SKILL.md",
 				"references/custom-elements.md",
 				"references/ds-layout.md"
-			]
+			],
+			"showcase": null
 		},
 		{
 			"name": "disk-cleanup",
@@ -224,7 +384,8 @@
 			"path": "inventory/skills/disk-cleanup",
 			"files": [
 				"SKILL.md"
-			]
+			],
+			"showcase": null
 		},
 		{
 			"name": "external-worker-delegation",
@@ -240,7 +401,8 @@
 			"files": [
 				"SKILL.md",
 				"dispatch.sh"
-			]
+			],
+			"showcase": null
 		},
 		{
 			"name": "failure-analysis",
@@ -253,7 +415,8 @@
 			"path": "inventory/skills/failure-analysis",
 			"files": [
 				"SKILL.md"
-			]
+			],
+			"showcase": null
 		},
 		{
 			"name": "frontend-engineering",
@@ -269,7 +432,8 @@
 				"react.md",
 				"svelte.md",
 				"sveltekit.md"
-			]
+			],
+			"showcase": null
 		},
 		{
 			"name": "fvm-flutter",
@@ -284,7 +448,8 @@
 			"path": "inventory/skills/fvm-flutter",
 			"files": [
 				"SKILL.md"
-			]
+			],
+			"showcase": null
 		},
 		{
 			"name": "grok-build-harness",
@@ -301,7 +466,8 @@
 			"files": [
 				"EXAMPLES.md",
 				"SKILL.md"
-			]
+			],
+			"showcase": null
 		},
 		{
 			"name": "ica-llm-gateway",
@@ -317,7 +483,79 @@
 			"files": [
 				"SKILL.md",
 				"scripts/probe.py"
-			]
+			],
+			"showcase": null
+		},
+		{
+			"name": "landing-page",
+			"version": "0.1.2",
+			"tags": [
+				"frontend",
+				"marketing",
+				"site"
+			],
+			"description": "Create or refresh a product's public landing page (the Site) so it sells the product's business value, demonstrates rather than describes, stays true to the code that ships today, and belongs to the owner's family of sibling sites without copying them. Covers inputs, the section order, the claims ledger, colour and contrast, gated wording, a separate site repo with previews, and visual checks before hand-off. Activate when building, redesigning or reviewing a landing or marketing page, or its comparison table.",
+			"path": "inventory/skills/landing-page",
+			"files": [
+				"SKILL.md"
+			],
+			"showcase": {
+				"value": "A product site that sells what the team saves or wins, shows each point with a picture, and says only what ships today, with every claim traced to the code in a claims ledger.",
+				"howItWorks": {
+					"title": "Facts flow from the product branch to the page, and guards keep them true",
+					"stages": [
+						{
+							"name": "Inputs",
+							"lines": [
+								"brand assets, the owner's",
+								"strategy, the product",
+								"branch"
+							],
+							"accent": false
+						},
+						{
+							"name": "Claims ledger",
+							"lines": [
+								"one row per claim",
+								"with its proof"
+							],
+							"accent": true
+						},
+						{
+							"name": "Spec, then build",
+							"lines": [
+								"value, see it in action,",
+								"use cases, components,",
+								"comparison, call to action"
+							],
+							"accent": false
+						},
+						{
+							"name": "Guards",
+							"lines": [
+								"gated wording, no real",
+								"names, no stray URLs",
+								"or client JavaScript"
+							],
+							"accent": false
+						}
+					]
+				},
+				"workflow": [
+					"Gather assets, the owner's strategy and the facts from the product's current branch.",
+					"Start a claims ledger: every claim with the file, test or doc that proves it.",
+					"Post a short spec with a visual per section, then build in rounds with a preview each.",
+					"Gate unreleased wording behind a build flag and let guard tests fail the build."
+				],
+				"inAction": [
+					{
+						"caption": "Three items of the skill's checklist that the live home page did not meet when the skill was run on it (abridged).",
+						"source": "landing-page checklist on the skillforgecloud.com home page, skill-forge-site main at efa4216, 2026-11-28",
+						"kind": "excerpt",
+						"excerpt": "Not met: Value first; section order as in doctrine 4; each point has a visual\nNot met: Claims ledger complete\nNot met: Comparison rows are buyer questions, sourced and dated"
+					}
+				]
+			}
 		},
 		{
 			"name": "llm-integration",
@@ -330,7 +568,8 @@
 			"path": "inventory/skills/llm-integration",
 			"files": [
 				"SKILL.md"
-			]
+			],
+			"showcase": null
 		},
 		{
 			"name": "llm-json-portable",
@@ -344,7 +583,25 @@
 			"path": "inventory/skills/llm-json-portable",
 			"files": [
 				"SKILL.md"
-			]
+			],
+			"showcase": null
+		},
+		{
+			"name": "local-to-cloud-migration",
+			"version": "0.1.0",
+			"tags": [
+				"migration",
+				"cloud",
+				"claude-projects",
+				"workstation",
+				"cleanup"
+			],
+			"description": "Move a project's local Claude Code work into cloud sessions (Claude Project threads, cloud sessions) and then retire it from the machine: a read-only audit of each clone and of the Claude session data, a harvest plan the owner confirms before anything moves, a rescue that scans for secrets before every push or copy, a check from the cloud that everything arrived, and a delete only after the owner's yes on an exact list. Any OS. Activate when the owner asks to move a project off a machine to cloud sessions, harvest or migrate local Claude Code sessions, or retire a project's clones and session data from a machine. For freeing disk space on a machine that stays in use, use disk-cleanup.",
+			"path": "inventory/skills/local-to-cloud-migration",
+			"files": [
+				"SKILL.md"
+			],
+			"showcase": null
 		},
 		{
 			"name": "migration-deprecation",
@@ -357,7 +614,8 @@
 			"path": "inventory/skills/migration-deprecation",
 			"files": [
 				"SKILL.md"
-			]
+			],
+			"showcase": null
 		},
 		{
 			"name": "performance-analysis",
@@ -370,7 +628,8 @@
 			"path": "inventory/skills/performance-analysis",
 			"files": [
 				"SKILL.md"
-			]
+			],
+			"showcase": null
 		},
 		{
 			"name": "podman-utilization",
@@ -384,7 +643,8 @@
 			"path": "inventory/skills/podman-utilization",
 			"files": [
 				"SKILL.md"
-			]
+			],
+			"showcase": null
 		},
 		{
 			"name": "product-parity",
@@ -420,7 +680,8 @@
 				"scripts/parity-session.mjs",
 				"scripts/parity-strings.mjs",
 				"scripts/parity.config.example.json"
-			]
+			],
+			"showcase": null
 		},
 		{
 			"name": "production-readiness",
@@ -433,7 +694,92 @@
 			"path": "inventory/skills/production-readiness",
 			"files": [
 				"SKILL.md"
-			]
+			],
+			"showcase": null
+		},
+		{
+			"name": "quiet-ui-style-guide",
+			"version": "0.1.0",
+			"tags": [
+				"frontend",
+				"design",
+				"ui"
+			],
+			"description": "Usage rules for a dense, calm work-tool interface (\"quiet UI\": greyscale first, hairlines, little motion): which type size, weight and radius to use where, at most two nested boxes, motion only on page change, one primary action per page, component states, Chinese UI text rules, and a style checklist to run on a diff or a screenshot. All values come from `ui-design-tokens`. Activate when designing, building or reviewing a page or component of an app, console or dashboard in this style. Not for public landing or marketing pages (`landing-page`).",
+			"path": "inventory/skills/quiet-ui-style-guide",
+			"files": [
+				"SKILL.md"
+			],
+			"showcase": {
+				"value": "A calm, dense interface people can look at all day: greyscale first, hairlines instead of shadows, one primary action per page, and a checklist to review a diff or a screenshot against.",
+				"howItWorks": {
+					"title": "Values come from the tokens; this skill decides where each one goes",
+					"stages": [
+						{
+							"name": "ui-design-tokens",
+							"lines": [
+								"sizes, weights,",
+								"radii, colours"
+							],
+							"accent": false
+						},
+						{
+							"name": "Usage rules",
+							"lines": [
+								"type, weight, radius",
+								"at most two nested boxes",
+								"motion on page change"
+							],
+							"accent": true
+						},
+						{
+							"name": "Page or component",
+							"lines": [
+								"one primary action",
+								"component states"
+							],
+							"accent": false
+						},
+						{
+							"name": "Style checklist",
+							"lines": [
+								"run on a diff",
+								"or a screenshot"
+							],
+							"accent": false
+						}
+					]
+				},
+				"workflow": [
+					"Load ui-design-tokens alongside it; every value comes from there.",
+					"Lay out the page with its rules: hairline panels, few weights, spacing from the scale.",
+					"Give each page one primary action and quiet secondary ones.",
+					"Run the style checklist on the diff or a screenshot before review."
+				],
+				"inAction": [
+					{
+						"caption": "Left before, right after: the skill catalog went from 42 separate cards to one panel with ruled rows and hairline edges. The skill is written for app screens; on this public listing page only its panel, row and spacing rules were applied, and tags stay filled chips.",
+						"source": "skill-forge-site, before: main at efa4216 (the live site); after: the tokens change, merged into dev as c246dfe, 2026-11-28",
+						"kind": "image",
+						"file": "catalog-before-after.png",
+						"alt": "Skill Forge catalog page: separate boxed cards on the left, one ruled list on the right"
+					}
+				]
+			}
+		},
+		{
+			"name": "review-checklist",
+			"version": "0.1.0",
+			"tags": [
+				"review",
+				"review-lens"
+			],
+			"description": "The checks every code review runs before it passes a change or lets it merge: review the rebased head, rerun the repo's gates, trace each change to the request, security, tests (skipped is not passed), docs and contracts, CI config, and one severity rubric ending in APPROVE or CHANGES NEEDED. Activate when reviewing a PR, branch or diff, in a reviewer thread, or when merging reviewer subagent findings into a verdict.",
+			"path": "inventory/skills/review-checklist",
+			"files": [
+				"SKILL.md"
+			],
+			"showcase": null
 		},
 		{
 			"name": "role-end-user",
@@ -449,7 +795,8 @@
 			"path": "inventory/skills/role-end-user",
 			"files": [
 				"SKILL.md"
-			]
+			],
+			"showcase": null
 		},
 		{
 			"name": "role-main-dev",
@@ -464,7 +811,8 @@
 			"path": "inventory/skills/role-main-dev",
 			"files": [
 				"SKILL.md"
-			]
+			],
+			"showcase": null
 		},
 		{
 			"name": "role-ops",
@@ -479,7 +827,8 @@
 			"path": "inventory/skills/role-ops",
 			"files": [
 				"SKILL.md"
-			]
+			],
+			"showcase": null
 		},
 		{
 			"name": "role-product-design",
@@ -495,7 +844,8 @@
 			"path": "inventory/skills/role-product-design",
 			"files": [
 				"SKILL.md"
-			]
+			],
+			"showcase": null
 		},
 		{
 			"name": "role-slice-dev",
@@ -510,7 +860,8 @@
 			"path": "inventory/skills/role-slice-dev",
 			"files": [
 				"SKILL.md"
-			]
+			],
+			"showcase": null
 		},
 		{
 			"name": "security-baseline",
@@ -524,7 +875,8 @@
 			"path": "inventory/skills/security-baseline",
 			"files": [
 				"SKILL.md"
-			]
+			],
+			"showcase": null
 		},
 		{
 			"name": "session-roles",
@@ -540,7 +892,8 @@
 			"path": "inventory/skills/session-roles",
 			"files": [
 				"SKILL.md"
-			]
+			],
+			"showcase": null
 		},
 		{
 			"name": "skill-forge-authoring",
@@ -556,7 +909,8 @@
 			"files": [
 				"EXAMPLES.md",
 				"SKILL.md"
-			]
+			],
+			"showcase": null
 		},
 		{
 			"name": "skill-forge-project",
@@ -570,7 +924,8 @@
 			"path": "inventory/skills/skill-forge-project",
 			"files": [
 				"SKILL.md"
-			]
+			],
+			"showcase": null
 		},
 		{
 			"name": "supabase-postgres",
@@ -584,7 +939,8 @@
 			"path": "inventory/skills/supabase-postgres",
 			"files": [
 				"SKILL.md"
-			]
+			],
+			"showcase": null
 		},
 		{
 			"name": "testing-strategy",
@@ -597,11 +953,101 @@
 			"path": "inventory/skills/testing-strategy",
 			"files": [
 				"SKILL.md"
-			]
+			],
+			"showcase": null
+		},
+		{
+			"name": "ui-design-tokens",
+			"version": "0.1.1",
+			"tags": [
+				"frontend",
+				"design-tokens",
+				"accessibility"
+			],
+			"description": "Every design token value for a web app UI in one place: colour roles for light and dark, type scale, spacing, radius, motion and shadow, as a W3C DTCG tokens.json with a generated tokens.css (light-dark(), no duplicated dark block), a three-state theme switch, reduced-motion and forced-colours handling, and a dependency-free contrast checker (WCAG 2.2 gate, APCA advisory). Ships a quiet, brand-neutral default preset to swap for your own. Activate when defining or changing token values, adding dark mode or a theme switch, adding a token, or checking a palette's contrast.",
+			"path": "inventory/skills/ui-design-tokens",
+			"files": [
+				"SKILL.md",
+				"scripts/color.mjs",
+				"scripts/tokens.mjs",
+				"tokens.css",
+				"tokens.json"
+			],
+			"showcase": {
+				"value": "Every colour, type size, spacing step, radius and motion value lives in one token file, in light and dark, and its checker fails (exit 1) when a declared colour pair drops below WCAG AA in either theme.",
+				"howItWorks": {
+					"title": "One token file drives the page, and a checker tests every colour pair",
+					"stages": [
+						{
+							"name": "Your colours",
+							"lines": [
+								"swap the preset's values",
+								"or brand-palette-roles"
+							],
+							"accent": false
+						},
+						{
+							"name": "tokens.json",
+							"lines": [
+								"one source of truth:",
+								"colour, type, spacing,",
+								"radius, motion"
+							],
+							"accent": true
+						},
+						{
+							"name": "tokens.css",
+							"lines": [
+								"generated, light-dark()",
+								"forced colours and",
+								"reduced motion"
+							],
+							"accent": false
+						},
+						{
+							"name": "Contrast check",
+							"lines": [
+								"every declared pair,",
+								"both themes, WCAG 2.2",
+								"gate, APCA advisory"
+							],
+							"accent": false
+						}
+					]
+				},
+				"workflow": [
+					"Copy tokens.json and its scripts into the repo, then swap the values for the product's own (brand-palette-roles when starting from brand colours).",
+					"Generate the CSS with tokens.mjs css --out tokens.css.",
+					"Run tokens.mjs check and fix every WCAG failure.",
+					"Load tokens.css before every other stylesheet, and add the pre-paint script so the stored theme applies before first paint."
+				],
+				"inAction": [
+					{
+						"caption": "Dark mode, left before and right after the tokens. Before, the logo's slate tile matched the header and disappeared; after, it keeps a hairline edge on a neutral dark canvas.",
+						"source": "skill-forge-site, before: main at efa4216 (the live site); after: the tokens change, merged into dev as c246dfe, 2026-11-28",
+						"kind": "image",
+						"file": "home-dark-before-after.png",
+						"alt": "Skill Forge home page in dark mode: on the left the logo tile blends into the header, on the right it has a visible edge"
+					},
+					{
+						"caption": "Light mode, left before and right after: a warm paper canvas, the brand orange as the primary button with dark text, and darker orange links.",
+						"source": "skill-forge-site, before: main at efa4216 (the live site); after: the tokens change, merged into dev as c246dfe, 2026-11-28",
+						"kind": "image",
+						"file": "home-light-before-after.png",
+						"alt": "Skill Forge home page in light mode: cool white canvas on the left, warm paper canvas with an orange primary button on the right"
+					},
+					{
+						"caption": "The checker's summary line for the Site's tokens, as printed (the four advisories are listed above it and do not fail the check).",
+						"source": "tokens.mjs check on skill-forge-site dev at c246dfe, 2026-11-28",
+						"kind": "excerpt",
+						"excerpt": "132 pairs checked (light and dark): 0 WCAG failures, 4 APCA advisories"
+					}
+				]
+			}
 		},
 		{
 			"name": "ui-portability-baseline",
-			"version": "0.2.0",
+			"version": "0.2.1",
 			"tags": [
 				"frontend",
 				"review-lens"
@@ -610,7 +1056,8 @@
 			"path": "inventory/skills/ui-portability-baseline",
 			"files": [
 				"SKILL.md"
-			]
+			],
+			"showcase": null
 		},
 		{
 			"name": "umbrella-workspace",
@@ -627,7 +1074,8 @@
 			"files": [
 				"PARALLEL-WORKTREES.md",
 				"SKILL.md"
-			]
+			],
+			"showcase": null
 		},
 		{
 			"name": "vercel-deploy",
@@ -641,11 +1089,12 @@
 			"path": "inventory/skills/vercel-deploy",
 			"files": [
 				"SKILL.md"
-			]
+			],
+			"showcase": null
 		}
 	],
 	"counts": {
-		"skills": 42,
+		"skills": 49,
 		"subagentSets": 4,
 		"hookSets": 2,
 		"instructionVariants": 2
