@@ -32,3 +32,21 @@ export function snapshotDate(): string {
 		timeZone: 'UTC'
 	});
 }
+
+/** A skill's showcase as scripts/catalog-lib.mjs checkShowcase writes it (JSON import types lose the union). */
+export type ShowcaseItem = { caption: string; source: string } & (
+	| { kind: 'image'; file: string; alt: string }
+	| { kind: 'excerpt'; excerpt: string }
+	| { kind: 'swatches'; swatches: { name: string; hex: string }[] }
+);
+
+export type Showcase = {
+	value: string;
+	howItWorks: { title: string; stages: { name: string; lines: string[]; accent: boolean }[] };
+	workflow: string[];
+	inAction: ShowcaseItem[];
+};
+
+export function showcaseOf(skill: Skill): Showcase | null {
+	return (skill.showcase as Showcase | null) ?? null;
+}

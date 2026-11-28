@@ -68,6 +68,20 @@ test('every skill and tag has a page, and the sitemap lists them', () => {
 	for (const s of snapshot.skills) assert.ok(llms.includes(`[${s.name}](`), `llms.txt: ${s.name}`);
 });
 
+test('a skill with a showcase shows its four sections, and every image it names is built', () => {
+	for (const s of snapshot.skills.filter((s) => s.showcase)) {
+		const page = read(`skills/${s.name}.html`);
+		for (const id of ['value-title', 'how-title', 'workflow-title', 'action-title']) assert.ok(page.includes(`id="${id}"`), `${s.name}: ${id}`);
+		for (const item of s.showcase.inAction.filter((i) => i.kind === 'image')) {
+			assert.ok(files.includes(`showcase/${s.name}/${item.file}`), `${s.name}: ${item.file}`);
+			assert.ok(page.includes(`src="/showcase/${s.name}/${item.file}"`), `${s.name}: img ${item.file}`);
+		}
+	}
+	for (const s of snapshot.skills.filter((s) => !s.showcase)) {
+		assert.ok(!read(`skills/${s.name}.html`).includes('id="value-title"'), `${s.name} has no showcase`);
+	}
+});
+
 test('Pages files: 404 page, headers, robots, llms.txt and no redirects', () => {
 	assert.ok(files.includes('404.html'));
 	assert.match(read('404.html'), /href="\/_app\//, '404.html uses absolute asset URLs');

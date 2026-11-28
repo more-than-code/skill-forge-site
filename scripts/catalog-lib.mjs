@@ -52,7 +52,7 @@ export function frontmatterDescription(text) {
  * counts of the other artifact kinds. Throws on names, versions or tags the site could not
  * show safely, so a bad registry fails the snapshot instead of the page.
  * @param {any} registry parsed registry.json
- * @param {(skill: any) => { description: string, files: string[] }} readSkill
+ * @param {(skill: any) => { description: string, files: string[], showcase?: any }} readSkill
  */
 export function buildCatalog(registry, readSkill) {
 	const skills = registry.skills
@@ -63,10 +63,18 @@ export function buildCatalog(registry, readSkill) {
 			if (!SKILL_PATH.test(skill.path)) throw new Error(`bad path for ${skill.name}: ${skill.path}`);
 			const tags = skill.tags ?? [];
 			for (const tag of tags) if (!NAME.test(tag)) throw new Error(`bad tag on ${skill.name}: ${tag}`);
-			const { description, files } = readSkill(skill);
+			const { description, files, showcase } = readSkill(skill);
 			if (!description) throw new Error(`no description in ${skill.name}/SKILL.md`);
 			for (const file of files) if (!FILE_PATH.test(file)) throw new Error(`bad file in ${skill.name}: ${file}`);
-			return { name: skill.name, version: skill.version, tags, description, path: skill.path, files };
+			return {
+				name: skill.name,
+				version: skill.version,
+				tags,
+				description,
+				path: skill.path,
+				files,
+				showcase: showcase ? checkShowcase(showcase, skill.name) : null
+			};
 		})
 		.sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
 	return {
@@ -78,5 +86,74 @@ export function buildCatalog(registry, readSkill) {
 			hookSets: (registry.managedHooks ?? []).length,
 			instructionVariants: (registry.instructionVariants ?? []).length
 		}
+	};
+}
+
+// ---- Skill showcases (skill-forge docs/SHOWCASE.md): showcase/<skill>/showcase.json ----
+
+const IMAGE_FILE = /^[a-z0-9][a-z0-9-]{0,63}\.(png|jpg|webp)$/;
+const HEX = /^#[0-9A-Fa-f]{6}$/;
+const LINE = /^[^\u0000-\u001F\u007F]+$/;
+const BLOCK = /^[^\u0000-\u0009\u000B-\u001F\u007F]+$/;
+
+export const SHOWCASE_PATTERNS = { IMAGE_FILE, HEX };
+
+/** @param {any} value @param {string} where @param {number} max @param {RegExp} [pattern] @returns {string} */
+function str(value, where, max, pattern = LINE) {
+	if (typeof value !== 'string' || value.trim() === '' || value.length > max || !pattern.test(value)) {
+		throw new Error(`showcase: ${where} must be printable text of at most ${max} characters`);
+	}
+	return value;
+}
+
+/** @param {any} value @param {string} where @param {number} min @param {number} max @returns {any[]} */
+function arr(value, where, min, max) {
+	if (!Array.isArray(value) || value.length < min || value.length > max) {
+		throw new Error(`showcase: ${where} must be a list of ${min} to ${max} items`);
+	}
+	return value;
+}
+
+/**
+ * A showcase.json reduced to the fields the site shows, each checked. Throws on anything else,
+ * so a bad showcase fails the snapshot instead of the page. Unknown fields are dropped.
+ * @param {any} data
+ * @param {string} name the skill
+ */
+export function checkShowcase(data, name) {
+	const at = (/** @type {string} */ path) => `${name} ${path}`;
+	if (!data || typeof data !== 'object') throw new Error(`showcase: ${name} is not an object`);
+	const how = data.howItWorks ?? {};
+	return {
+		value: str(data.value, at('value'), 400),
+		howItWorks: {
+			title: str(how.title, at('howItWorks.title'), 120),
+			stages: arr(how.stages, at('howItWorks.stages'), 2, 6).map((stage, i) => ({
+				name: str(stage?.name, at(`stages[${i}].name`), 40),
+				lines: arr(stage?.lines, at(`stages[${i}].lines`), 1, 4).map((line, j) => str(line, at(`stages[${i}].lines[${j}]`), 60)),
+				accent: stage?.accent === true
+			}))
+		},
+		workflow: arr(data.workflow, at('workflow'), 2, 6).map((step, i) => str(step, at(`workflow[${i}]`), 200)),
+		inAction: arr(data.inAction, at('inAction'), 1, 6).map((item, i) => {
+			const where = at(`inAction[${i}]`);
+			const kinds = ['image', 'excerpt', 'swatches'].filter((kind) => item?.[kind] !== undefined);
+			if (kinds.length !== 1) throw new Error(`showcase: ${where} needs exactly one of image, excerpt or swatches`);
+			const base = { caption: str(item.caption, `${where}.caption`, 300), source: str(item.source, `${where}.source`, 200) };
+			if (item.image !== undefined) {
+				const file = item.image?.file;
+				if (typeof file !== 'string' || !IMAGE_FILE.test(file)) throw new Error(`showcase: ${where}.image.file is not a plain image name`);
+				return { ...base, kind: 'image', file, alt: str(item.image.alt, `${where}.image.alt`, 200) };
+			}
+			if (item.excerpt !== undefined) return { ...base, kind: 'excerpt', excerpt: str(item.excerpt, `${where}.excerpt`, 1500, BLOCK) };
+			return {
+				...base,
+				kind: 'swatches',
+				swatches: arr(item.swatches, `${where}.swatches`, 1, 16).map((swatch, j) => {
+					if (typeof swatch?.hex !== 'string' || !HEX.test(swatch.hex)) throw new Error(`showcase: ${where}.swatches[${j}].hex must be #RRGGBB`);
+					return { name: str(swatch.name, `${where}.swatches[${j}].name`, 24), hex: swatch.hex };
+				})
+			};
+		})
 	};
 }

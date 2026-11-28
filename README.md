@@ -44,6 +44,12 @@ Refresh it from a clean skill-forge checkout at the commit you want published (n
 pnpm catalog ../path/to/skill-forge
 ```
 
+It also reads each skill's optional showcase (`showcase/<skill>/showcase.json` in skill-forge, see its
+`docs/SHOWCASE.md`), checks it, stores it in the snapshot and copies the images it names to
+`static/showcase/<skill>/`. A skill with a showcase gets four extra sections on its page (value, how it
+works, workflow, see it in action); the diagram and colour swatches are drawn from the data with the
+shared diagram classes, so they follow the tokens and need no inline styles.
+
 The script refuses a dirty checkout and rejects names, versions or tags outside the registry's
 patterns. Skill and file links point at the snapshot's commit, so they always match the page.
 

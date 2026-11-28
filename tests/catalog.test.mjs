@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
-import { PATTERNS, buildCatalog, frontmatterDescription } from '../scripts/catalog-lib.mjs';
+import { readdirSync } from 'node:fs';
+import { PATTERNS, SHOWCASE_PATTERNS, buildCatalog, checkShowcase, frontmatterDescription } from '../scripts/catalog-lib.mjs';
 
 test('frontmatterDescription reads plain, quoted and block descriptions', () => {
 	assert.equal(frontmatterDescription('---\nname: a\ndescription: Plain text.\n---\nbody'), 'Plain text.');
@@ -64,5 +65,63 @@ test('the committed snapshot is well formed', () => {
 		assert.match(s.path, PATTERNS.SKILL_PATH);
 		for (const tag of s.tags) assert.match(tag, PATTERNS.NAME);
 		for (const file of s.files) assert.match(file, PATTERNS.FILE_PATH);
+		for (const item of s.showcase?.inAction ?? []) {
+			assert.ok(['image', 'excerpt', 'swatches'].includes(item.kind), `${s.name}: item kind`);
+			if (item.kind === 'image') assert.match(item.file, SHOWCASE_PATTERNS.IMAGE_FILE);
+			for (const swatch of item.swatches ?? []) assert.match(swatch.hex, SHOWCASE_PATTERNS.HEX);
+		}
 	}
+});
+
+const showcase = () => ({
+	value: 'Saves time.',
+	howItWorks: { title: 'Two parts', stages: [{ name: 'In', lines: ['a'] }, { name: 'Out', lines: ['b'], accent: true }] },
+	workflow: ['One', 'Two'],
+	inAction: [
+		{ caption: 'c', source: 's', image: { file: 'shot.png', alt: 'a' } },
+		{ caption: 'c', source: 's', excerpt: 'x\ny' },
+		{ caption: 'c', source: 's', swatches: [{ name: 'brand', hex: '#E96800' }] }
+	],
+	extra: 'dropped'
+});
+
+test('checkShowcase keeps only the shown fields and tags each item with its kind', () => {
+	const out = checkShowcase(showcase(), 'x');
+	assert.equal('extra' in out, false);
+	assert.deepEqual(out.inAction.map((i) => i.kind), ['image', 'excerpt', 'swatches']);
+	assert.equal(out.howItWorks.stages[0].accent, false);
+	assert.equal(out.inAction[0].file, 'shot.png');
+});
+
+test('checkShowcase refuses what the page could not show safely', () => {
+	const bad = (edit) => {
+		const data = showcase();
+		edit(data);
+		return () => checkShowcase(data, 'x');
+	};
+	assert.throws(bad((d) => (d.inAction[0].image.file = '../x.png')), /plain image name/);
+	assert.throws(bad((d) => (d.inAction[0].image.file = 'x.svg')), /plain image name/);
+	assert.throws(bad((d) => (d.inAction[2].swatches[0].hex = 'red;}')), /#RRGGBB/);
+	assert.throws(bad((d) => (d.value = 'a\u0007b')), /printable/);
+	assert.throws(bad((d) => (d.inAction[1].image = { file: 'a.png', alt: 'a' })), /exactly one/);
+	assert.throws(bad((d) => (d.workflow = ['only one'])), /2 to 6/);
+	assert.throws(bad((d) => (d.howItWorks.stages[0].lines = [])), /1 to 4/);
+});
+
+test('showcase images in static/ are exactly the ones the snapshot names', () => {
+	const snapshot = JSON.parse(readFileSync(new URL('../src/lib/catalog.json', import.meta.url), 'utf8'));
+	const named = snapshot.skills.flatMap((s) =>
+		(s.showcase?.inAction ?? []).filter((i) => i.kind === 'image').map((i) => `${s.name}/${i.file}`)
+	);
+	for (const n of named) assert.match(n.split('/')[1], SHOWCASE_PATTERNS.IMAGE_FILE);
+	const dir = new URL('../static/showcase/', import.meta.url);
+	let present = [];
+	try {
+		present = readdirSync(dir, { recursive: true, withFileTypes: true })
+			.filter((e) => e.isFile())
+			.map((e) => `${e.parentPath.split('/').filter(Boolean).at(-1)}/${e.name}`);
+	} catch {
+		present = [];
+	}
+	assert.deepEqual(present.sort(), named.sort());
 });
