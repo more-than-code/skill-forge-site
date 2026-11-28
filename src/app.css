@@ -1,30 +1,6 @@
-/* Brand colours from the Skill Forge mark (skill-forge docs/brand/logo/mark.svg). Colour literals live
-   only in these two token blocks. Dark mode follows the system: no script, no theme switch. */
-:root {
-	--bg: #f8fafc;
-	--surface: #ffffff;
-	--text: #0f172a;
-	--muted: #475569;
-	--border: #e2e8f0;
-	--accent: #c2410c;
-	--accent-strong: #9a3412;
-	--on-accent: #ffffff;
-	--chip: #f1f5f9;
-}
-
-@media (prefers-color-scheme: dark) {
-	:root {
-		--bg: #0f172a;
-		--surface: #1e293b;
-		--text: #f8fafc;
-		--muted: #cbd5e1;
-		--border: #334155;
-		--accent: #fb923c;
-		--accent-strong: #fdba74;
-		--on-accent: #0f172a;
-		--chip: #273449;
-	}
-}
+/* Site styles. Every value comes from src/lib/tokens/tokens.css (generated from tokens.json, the
+   ui-design-tokens structure with brand-palette-roles values). No colour, size or spacing literals here.
+   Dark mode follows the system: no script, no theme switch. */
 
 * {
 	box-sizing: border-box;
@@ -33,73 +9,317 @@
 body {
 	margin: 0;
 	background: var(--bg);
-	color: var(--text);
-	font: 16px/1.6 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+	color: var(--ink);
+	font-family: var(--font-sans);
+	font-size: var(--fs-md);
+	line-height: var(--lh-body);
+	font-weight: var(--fw-regular);
+}
+
+h1,
+h2,
+h3 {
+	font-weight: var(--fw-bold);
+	line-height: var(--lh-tight);
+}
+
+h1 {
+	font-size: var(--fs-3xl);
+}
+
+h2 {
+	font-size: var(--fs-2xl);
+}
+
+h3 {
+	font-size: var(--fs-lg);
 }
 
 a {
-	color: var(--accent);
+	color: var(--accent-ink);
+	text-underline-offset: 0.15em;
 }
 
 a:hover {
-	color: var(--accent-strong);
+	text-decoration-thickness: 2px;
 }
 
 a:focus-visible {
-	outline: 2px solid var(--accent);
-	outline-offset: 2px;
+	outline: var(--focus-width) solid var(--focus);
+	outline-offset: var(--focus-offset);
+	border-radius: var(--r-sm);
 }
 
 code {
-	font: 0.9em ui-monospace, SFMono-Regular, Menlo, monospace;
+	font-family: var(--font-mono);
+	font-size: 0.9em;
+}
+
+pre {
+	background: var(--surface-2);
+	border-radius: var(--r-md);
+	padding: var(--space-3) var(--space-4);
+	overflow-x: auto;
+	margin: 0;
+	line-height: var(--lh-snug);
 }
 
 .wrap {
 	max-width: 64rem;
 	margin: 0 auto;
-	padding: 0 16px;
+	padding: 0 var(--space-4);
+}
+
+/* A container: surface, hairline edge, no shadow (quiet-ui-style-guide section 3). The transparent
+   outline turns into a visible system outline in forced colours, where box-shadow is dropped. */
+.panel {
+	background: var(--surface);
+	box-shadow: var(--edge);
+	outline: 1px solid transparent;
+	border-radius: var(--r-lg);
 }
 
 .button {
 	display: inline-flex;
 	align-items: center;
-	min-height: 44px;
-	padding: 0 20px;
-	border-radius: 8px;
-	border: 1px solid var(--accent);
-	font-weight: 600;
+	min-height: 44px; /* off-scale: touch target for the main actions */
+	padding: 0 var(--space-5);
+	border-radius: var(--r-md);
+	border: 1px solid var(--line-strong);
+	color: var(--ink);
+	font-weight: var(--fw-bold);
 	text-decoration: none;
+	transition: background-color var(--t-fast) var(--ease-out);
+}
+
+.button:hover {
+	background: var(--surface-2);
 }
 
 .button.primary {
 	background: var(--accent);
-	color: var(--on-accent);
+	border-color: var(--accent);
+	color: var(--on-fill);
 }
 
 .button.primary:hover {
-	background: var(--accent-strong);
-	border-color: var(--accent-strong);
-	color: var(--on-accent);
+	text-decoration: underline;
 }
 
+/* Tags are small and quiet: radius sm, never a pill (quiet-ui-style-guide section 2). */
 .chip {
-	display: inline-block;
-	padding: 2px 10px;
-	border-radius: 999px;
-	background: var(--chip);
-	color: var(--muted);
-	font-size: 0.85rem;
+	display: inline-flex;
+	align-items: center;
+	min-height: 28px; /* off-scale: keeps a 24px target with clearance */
+	padding: 0 var(--space-2);
+	border-radius: var(--r-sm);
+	background: var(--surface-2);
+	color: var(--ink-2);
+	font-size: var(--fs-sm);
 	text-decoration: none;
 }
 
-a.chip {
-	min-height: 28px;
-}
-
 a.chip:hover {
-	color: var(--text);
+	background: var(--surface-3);
+	color: var(--ink);
 }
 
 .muted {
-	color: var(--muted);
+	color: var(--ink-2);
+}
+
+/* ---- Shared page sections (home page and skill pages) ---- */
+
+/* A section heading: a small eyebrow line above the h2. */
+.section-head {
+	margin-bottom: var(--space-5);
+	max-width: 48rem;
+}
+
+.section-head h2 {
+	margin: 0;
+}
+
+.eyebrow {
+	margin: 0 0 var(--space-2);
+	color: var(--accent-ink);
+	font-size: var(--fs-sm);
+	font-weight: var(--fw-bold);
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+}
+
+/* A figure holding an inline SVG diagram, with a caption. */
+.figure {
+	margin: 0;
+	padding: var(--space-4);
+	background: var(--surface);
+	box-shadow: var(--edge);
+	outline: 1px solid transparent;
+	border-radius: var(--r-lg);
+}
+
+.figure svg,
+svg.mini {
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+/* A wide diagram keeps a readable size on phones and scrolls inside its frame. */
+.figure.wide {
+	overflow-x: auto;
+}
+
+.figure.wide svg {
+	min-width: 560px;
+}
+
+.figure figcaption {
+	margin-top: var(--space-2);
+	color: var(--ink-2);
+	font-size: var(--fs-sm);
+}
+
+/* An illustrative mock (terminal or file): always labelled "Illustrative interface" in .mock-bar. */
+.mock {
+	background: var(--surface);
+	box-shadow: var(--edge);
+	outline: 1px solid transparent;
+	border-radius: var(--r-lg);
+	overflow: hidden;
+}
+
+.mock-bar {
+	display: flex;
+	justify-content: space-between;
+	gap: var(--space-3);
+	flex-wrap: wrap;
+	margin: 0;
+	padding: var(--space-2) var(--space-4);
+	border-bottom: 1px solid var(--line);
+	color: var(--ink-2);
+	font-size: var(--fs-xs);
+}
+
+.mock pre {
+	border-radius: 0;
+	background: var(--surface);
+	font-size: var(--fs-sm);
+}
+
+/* Diagram parts: tokens only, so diagrams follow light and dark. */
+.d-box {
+	fill: var(--surface-2);
+	stroke: var(--line-strong);
+	stroke-width: 1;
+}
+
+.d-box-accent {
+	fill: var(--accent-wash);
+	stroke: var(--accent);
+	stroke-width: 1.5;
+}
+
+.d-box-alert {
+	fill: var(--critical-wash);
+	stroke: var(--critical);
+	stroke-width: 1.5;
+}
+
+.d-label {
+	fill: var(--ink);
+	font-family: var(--font-sans);
+	font-size: 12px; /* SVG user units: scales with the drawing */
+}
+
+.d-strong {
+	font-weight: var(--fw-bold);
+	font-size: 14px;
+}
+
+.d-small {
+	font-size: 11px;
+	fill: var(--ink-2);
+}
+
+.d-mono {
+	font-family: var(--font-mono);
+	font-size: 11px;
+}
+
+.d-muted {
+	fill: var(--ink-2);
+}
+
+/* Connectors: a dashed line that drifts toward the target. tokens.css stops it under reduced motion. */
+.d-flow path {
+	fill: none;
+	stroke: var(--accent);
+	stroke-width: 1.5;
+	stroke-dasharray: 4 4;
+	animation: d-flow 1.6s linear infinite;
+}
+
+@keyframes d-flow {
+	to {
+		stroke-dashoffset: -16;
+	}
+}
+
+/* Comparison table: rows are buyer questions; on phones each row becomes a card. */
+table.compare {
+	width: 100%;
+	border-collapse: collapse;
+	background: var(--surface);
+	box-shadow: var(--edge);
+	border-radius: var(--r-lg);
+	overflow: hidden;
+}
+
+.compare th,
+.compare td {
+	text-align: left;
+	vertical-align: top;
+	padding: var(--space-3) var(--space-4);
+	border-top: 1px solid var(--line);
+}
+
+.compare thead th {
+	border-top: 0;
+	color: var(--ink-2);
+	font-size: var(--fs-sm);
+}
+
+.compare tbody th {
+	font-weight: var(--fw-bold);
+	width: 36%;
+}
+
+@media (max-width: 640px) {
+	.compare thead {
+		display: none;
+	}
+
+	.compare tr,
+	.compare th,
+	.compare td {
+		display: block;
+		width: auto;
+	}
+
+	.compare tbody th {
+		width: auto;
+	}
+
+	.compare td {
+		border-top: 0;
+		padding-top: 0;
+	}
+
+	.compare td::before {
+		content: attr(data-label) ': ';
+		color: var(--ink-2);
+		font-weight: var(--fw-bold);
+	}
 }

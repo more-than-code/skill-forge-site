@@ -35,8 +35,8 @@
 
 <style>
 	.version {
-		font-size: 1rem;
-		font-weight: 400;
+		font-size: var(--fs-md);
+		font-weight: var(--fw-regular);
 	}
 
 	h1 {
@@ -44,22 +44,14 @@
 	}
 
 	.description {
-		font-size: 1.1rem;
+		font-size: var(--fs-lg);
 		max-width: 70ch;
 	}
 
 	.tags {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 8px;
-	}
-
-	pre {
-		background: var(--surface);
-		border: 1px solid var(--border);
-		border-radius: 8px;
-		padding: 12px 16px;
-		overflow-x: auto;
+		gap: var(--space-2);
 	}
 
 	li {

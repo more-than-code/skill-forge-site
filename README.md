@@ -15,8 +15,14 @@ Pull requests go into `dev`.
   `__data.json` and `version.json` files SvelteKit still emits.
 - `kit.paths.relative = false`, so `404.html` loads its CSS at any depth. Pages serves `404.html`
   with status 404 for every unknown path.
-- Colours: tokens in `src/app.css` from the brand mark (`static/favicon.svg`, copied from
-  skill-forge `docs/brand/logo/mark.svg`). Dark mode follows the system; there is no theme switch.
+- Design tokens: `src/lib/tokens/tokens.json` is the source of truth (the `ui-design-tokens` skill's
+  structure and role names). Colour values are derived with the `brand-palette-roles` skill from the
+  brand mark (`static/favicon.svg`, copied from skill-forge `docs/brand/logo/mark.svg`; primary
+  `#F97316`, secondary `#1E293B`). `src/lib/tokens/tokens.css` is generated; never edit it by hand.
+  After changing `tokens.json`, from `src/lib/tokens/`: `node scripts/tokens.mjs css > tokens.css`, then
+  `node scripts/tokens.mjs check` (0 WCAG failures required; APCA lines are advisory). `src/app.css` and
+  the components use tokens only. Dark mode follows the system through `light-dark()`; there is no theme
+  switch (the site ships no JavaScript).
 - Addresses are in `src/lib/links.ts`: the site at `https://skillforgecloud.com`, sign-in at
   `https://console.skillforgecloud.com/signin`.
 
@@ -26,6 +32,11 @@ The build never fetches anything. It reads `src/lib/catalog.json`, a committed s
 public registry (`more-than-code/skill-forge`): installable skills with version, tags, the
 `description` from each `SKILL.md`, and file list, plus counts and the source commit and date.
 Every number on the site is computed from it; there are no live usage or evaluation figures yet.
+
+The catalog page groups skills by purpose. `src/lib/groups.js` holds the groups (each with an icon in
+`src/lib/GroupIcon.svelte`) and, for every skill, its group and a one-line summary written for
+visitors; the full `description` stays on the skill's page. `pnpm test` fails when a skill in the
+snapshot has no entry, so a refresh that adds a skill must place it.
 
 Refresh it from a clean skill-forge checkout at the commit you want published (normally `main`):
 

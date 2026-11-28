@@ -22,7 +22,7 @@ const read = (f) => readFileSync(join(build, f), 'utf8');
 const ALLOWED_URL = [
 	/^https:\/\/skillforgecloud\.com(\/|$)/,
 	/^https:\/\/console\.skillforgecloud\.com\//,
-	/^https:\/\/github\.com\/more-than-code\/skill-forge(\/|$)/,
+	/^https:\/\/github\.com\/more-than-code\/skill-forge(\.git)?(\/|$)/,
 	/^http:\/\/www\.w3\.org\/2000\/svg$/,
 	/^http:\/\/www\.sitemaps\.org\/schemas\/sitemap\/0\.9$/
 ];

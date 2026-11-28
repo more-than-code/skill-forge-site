@@ -1,4 +1,5 @@
 <script lang="ts">
+	import '$lib/tokens/tokens.css';
 	import '../app.css';
 	import { REPO_URL, SIGN_IN_URL } from '$lib/links';
 
@@ -36,7 +37,7 @@
 
 <style>
 	header {
-		border-bottom: 1px solid var(--border);
+		border-bottom: 1px solid var(--line);
 		background: var(--surface);
 	}
 
@@ -44,43 +45,53 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		gap: 12px;
-		min-height: 64px;
+		gap: var(--space-3);
+		min-height: 64px; /* off-scale: header height */
 		flex-wrap: wrap;
 	}
 
 	.brand {
 		display: inline-flex;
 		align-items: center;
-		gap: 10px;
+		gap: var(--space-2);
 		min-height: 44px;
-		color: var(--text);
-		font-weight: 700;
-		font-size: 1.1rem;
+		color: var(--ink);
+		font-weight: var(--fw-bold);
+		font-size: var(--fs-lg);
 		text-decoration: none;
+	}
+
+	/* The mark's tile is a fixed dark slate; a hairline keeps its edge visible on the dark header. */
+	.brand img {
+		border-radius: var(--r-sm);
+		box-shadow: 0 0 0 1px var(--line-2);
 	}
 
 	.links {
 		display: flex;
 		align-items: center;
-		gap: 16px;
+		gap: var(--space-4);
 	}
 
 	.links > a:not(.button) {
 		display: inline-flex;
 		align-items: center;
 		min-height: 44px;
-		color: var(--text);
+		color: var(--ink);
 		text-decoration: none;
 	}
 
+	.links > a:not(.button):hover {
+		color: var(--accent-ink);
+	}
+
 	main {
-		padding-top: 32px;
-		padding-bottom: 48px;
+		padding-top: var(--space-6);
+		padding-bottom: var(--space-7);
 	}
 
 	footer {
-		border-top: 1px solid var(--border);
-		font-size: 0.9rem;
+		border-top: 1px solid var(--line);
+		font-size: var(--fs-sm);
 	}
 </style>

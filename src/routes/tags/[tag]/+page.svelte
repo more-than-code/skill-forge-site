@@ -19,7 +19,7 @@
 
 <style>
 	.tag {
-		font-size: 1.2rem;
+		font-size: var(--fs-lg);
 		vertical-align: middle;
 	}
 </style>
